@@ -18,6 +18,11 @@ const Dashboard: React.FC = () => {
         setIsMenuOpen(!isMenuOpen); // Toggle menu visibility
     };
 
+    // Example unit completion status (true for completed, false for not)
+    const unitCompletionStatus = Array(8).fill(false);
+    unitCompletionStatus[0] = true; // Example: Unit 3 is completed
+    unitCompletionStatus[1] = true; // Example: Unit 6 is completed
+
     return (
         <div className="flex flex-col h-screen relative"> {/* Added relative positioning */}
             {/* Header */}
@@ -74,10 +79,15 @@ const Dashboard: React.FC = () => {
 
                 {/* Units Icons */}
                 <div className="flex flex-wrap justify-center space-x-2 mt-2 md:mt-0">
-                    {Array.from({ length: 8 }).map((_, index) => (
+                    {unitCompletionStatus.map((isCompleted, index) => (
                         <div key={index} className="flex flex-col items-center">
-                            <button className="h-8 w-8 md:h-10 md:w-10"> {/* Increased size for PC view */}
-                                <FontAwesomeIcon icon={faBook} className="h-full w-full text-blue-500" /> {/* Unit Icon */}
+                            <button
+                                className={`h-10 w-10 rounded-full flex items-center justify-center transition duration-200 ${
+                                    isCompleted ? 'bg-blue-500 text-white' : 'bg-white border-2 border-blue-500 text-blue-500'
+                                } hover:bg-blue-100`}
+                                title={t('unit.label', { unitNumber: index + 1 })}
+                            >
+                                <FontAwesomeIcon icon={faBook} className="h-6 w-6" /> {/* Unit Icon */}
                             </button>
                             <span className="text-xs">{t('unit.label', { unitNumber: index + 1 })}</span> {/* Unit Label */}
                         </div>

@@ -15,6 +15,9 @@ i18n
           'header.standings': 'Standings',
           'header.profile': 'Profile',
           'dashboard.welcome': 'Welcome to the Dashboard',
+          'user.grade': 'Grade', // Grade
+          'user.score': 'Score', // Score
+          'unit.label': 'Unit {{unitNumber}}', // Unit Label
         },
       },
       ru: {
@@ -27,6 +30,9 @@ i18n
           'header.standings': 'Рейтинг',
           'header.profile': 'Профиль',
           'dashboard.welcome': 'Добро пожаловать в Панель управления',
+          'user.grade': 'Класс', // Grade
+          'user.score': 'Балл', // Score
+          'unit.label': 'Глава {{unitNumber}}', // Unit Label
         },
       },
       tj: {
@@ -39,6 +45,9 @@ i18n
           'header.standings': 'Рейтинг',
           'header.profile': 'Профил',
           'dashboard.welcome': 'Хуш омадед ба Дошкаи назорат',
+          'user.grade': 'Синф', // Grade
+          'user.score': 'Балл', // Score
+          'unit.label': 'Боб {{unitNumber}}', // Unit Label
         },
       },
     },

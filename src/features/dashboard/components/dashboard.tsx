@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom'; // Import Link for navigation
 import aoaLogo from '../../../assets/aoa-logo-notext.png'; // Adjust the path based on your folder structure
+import userIcon from '../../../assets/user-icon.png'; // Adjust the path for user icon
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesome
+import { faBook } from '@fortawesome/free-solid-svg-icons'; // Import a book icon for units
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -18,7 +21,7 @@ const Dashboard: React.FC = () => {
     return (
         <div className="flex flex-col h-screen">
             {/* Header */}
-            <header className="flex flex-col items-center justify-between p-4 bg-base-100 shadow-md">
+            <header className="flex flex-col items-center justify-between p-4 bg-gray-800 text-white shadow-md">
                 <div className="flex items-center justify-between w-full">
                     <div className="md:hidden">
                         <button onClick={toggleMenu} className="btn btn-square">
@@ -41,17 +44,48 @@ const Dashboard: React.FC = () => {
                     <span className="text-2xl font-bold text-center md:text-left">{t('header.title')}</span> {/* Translated Text */}
                 </div>
                 <nav className="hidden md:flex space-x-6 mt-2">
-                    <Link to="/dashboard" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
+                    <Link to="/" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
                     <Link to="/standings" className="btn btn-outline btn-primary">{t('header.standings')}</Link>
                     <Link to="/profile" className="btn btn-outline btn-primary">{t('header.profile')}</Link>
                 </nav>
             </header>
 
+            {/* User Info and Units Section */}
+            <div className="flex flex-col items-center justify-center p-4 bg-base-200 md:flex-row md:justify-between">
+                {/* User Info */}
+                <div className="flex items-center justify-center flex-col text-center mb-4 md:mb-0">
+                    <img src={userIcon} alt="User Icon" className="h-10 w-10 mb-2" /> {/* User Icon */}
+                    <div>
+                        <span className="font-bold">John Doe</span> {/* Full Name */}
+                        <div className="text-sm">{t('user.grade')}: 10</div> {/* Grade */}
+                    </div>
+                </div>
+
+                {/* Units Icons */}
+                <div className="flex flex-wrap justify-center space-x-2 mt-2 md:mt-0">
+                    {Array.from({ length: 8 }).map((_, index) => (
+                        <div key={index} className="flex flex-col items-center">
+                            <button className="h-8 w-8 md:h-10 md:w-10"> {/* Increased size for PC view */}
+                                <FontAwesomeIcon icon={faBook} className="h-full w-full text-blue-500" /> {/* Unit Icon */}
+                            </button>
+                            <span className="text-xs">{t('unit.label', { unitNumber: index + 1 })}</span> {/* Unit Label */}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Score */}
+                <div className="text-lg font-bold text-center mt-2 md:mt-0">
+                    <div className="bg-blue-500 text-white rounded-lg p-2">
+                        {t('user.score')}: 95 {/* Example Score */}
+                    </div>
+                </div>
+            </div>
+
             {/* Mobile Navigation Menu */}
             {isMenuOpen && (
                 <div className="md:hidden bg-base-100 shadow-md">
                     <nav className="flex flex-col space-y-2 p-4">
-                        <Link to="/dashboard" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
+                        <Link to="/" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
                         <Link to="/standings" className="btn btn-outline btn-primary">{t('header.standings')}</Link>
                         <Link to="/profile" className="btn btn-outline btn-primary">{t('header.profile')}</Link>
                     </nav>

@@ -19,7 +19,7 @@ const Dashboard: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen relative"> {/* Added relative positioning */}
             {/* Header */}
             <header className="flex flex-col items-center justify-between p-4 bg-gray-800 text-white shadow-md">
                 <div className="flex items-center justify-between w-full">
@@ -44,11 +44,22 @@ const Dashboard: React.FC = () => {
                     <span className="text-2xl font-bold text-center md:text-left">{t('header.title')}</span> {/* Translated Text */}
                 </div>
                 <nav className="hidden md:flex space-x-6 mt-2">
-                    <Link to="/" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
+                    <Link to="/dashboard" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
                     <Link to="/standings" className="btn btn-outline btn-primary">{t('header.standings')}</Link>
                     <Link to="/profile" className="btn btn-outline btn-primary">{t('header.profile')}</Link>
                 </nav>
             </header>
+
+            {/* Hamburger Menu */}
+            {isMenuOpen && (
+                <div className="absolute top-16 left-0 right-0 bg-base-100 shadow-md z-50"> {/* Positioned above content */}
+                    <nav className="flex flex-col space-y-2 p-4">
+                        <Link to="/dashboard" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
+                        <Link to="/standings" className="btn btn-outline btn-primary">{t('header.standings')}</Link>
+                        <Link to="/profile" className="btn btn-outline btn-primary">{t('header.profile')}</Link>
+                    </nav>
+                </div>
+            )}
 
             {/* User Info and Units Section */}
             <div className="flex flex-col items-center justify-center p-4 bg-base-200 md:flex-row md:justify-between">
@@ -80,17 +91,6 @@ const Dashboard: React.FC = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Mobile Navigation Menu */}
-            {isMenuOpen && (
-                <div className="md:hidden bg-base-100 shadow-md">
-                    <nav className="flex flex-col space-y-2 p-4">
-                        <Link to="/" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
-                        <Link to="/standings" className="btn btn-outline btn-primary">{t('header.standings')}</Link>
-                        <Link to="/profile" className="btn btn-outline btn-primary">{t('header.profile')}</Link>
-                    </nav>
-                </div>
-            )}
 
             {/* Main Content */}
             <div className="flex-grow flex items-center justify-center">

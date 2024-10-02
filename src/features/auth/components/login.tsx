@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
 
     return (
         <div className="flex flex-col md:flex-row h-screen relative">
-            <div className="hidden md:flex w-1/2 bg-green-500 items-center justify-center p-4"> {/* Hide on mobile */}
+            <div className="hidden md:flex w-1/2 bg-slate-300 items-center justify-center p-4"> {/* Hide on mobile */}
                 <img src={aoaLogo} alt="Aoa Logo" className="max-w-full h-auto" /> {/* Responsive image */}
             </div>
             <div className="w-full md:w-1/2 flex items-center justify-center p-4">

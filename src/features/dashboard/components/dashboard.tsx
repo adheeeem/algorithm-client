@@ -9,6 +9,7 @@ import { faBook } from '@fortawesome/free-solid-svg-icons'; // Import a book ico
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage menu visibility
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to manage dropdown visibility
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         i18n.changeLanguage(event.target.value);
@@ -18,10 +19,17 @@ const Dashboard: React.FC = () => {
         setIsMenuOpen(!isMenuOpen); // Toggle menu visibility
     };
 
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown visibility
+    };
+
     // Example unit completion status (true for completed, false for not)
     const unitCompletionStatus = Array(8).fill(false);
     unitCompletionStatus[0] = true; // Example: Unit 3 is completed
     unitCompletionStatus[1] = true; // Example: Unit 6 is completed
+
+    const weeks = [t('weeks.week1'), t('weeks.week2'), t('weeks.week3'), t('weeks.week4')]; // Translated Week Names
+    const subjects = [t('subjects.polynomials')]; // Translated Subject Name
 
     return (
         <div className="flex flex-col h-screen relative"> {/* Added relative positioning */}
@@ -103,17 +111,32 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Main Content */}
-            <div className="flex-grow flex">
-                {/* Left Side List */}
-                <div className="w-1/3 p-4"> {/* Allocating 1/3 of the page */}
-                    <div className="flex flex-col space-y-4"> {/* Container for the list */}
-                        {['Week 1', 'Week 2', 'Week 3', 'Week 4'].map((week, index) => (
-                            <button key={index} className="flex flex-col items-center p-4 border rounded-lg hover:bg-blue-100 transition duration-200">
-                                <span className="text-lg font-bold">{week}</span> {/* Week Name */}
-                                <span className="text-sm text-gray-600">Polynomials</span> {/* Subject Name */}
-                            </button>
-                        ))}
-                    </div>
+            <div className="flex-grow flex flex-col md:flex-row">
+                {/* Left Side List for Mobile */}
+                <div className="md:hidden p-4"> {/* Mobile Dropdown */}
+                    <button onClick={toggleDropdown} className="btn btn-outline btn-primary w-full">
+                        {t('header.weeks')} {/* Button text for dropdown */}
+                    </button>
+                    {isDropdownOpen && (
+                        <div className="flex flex-col space-y-2 mt-2">
+                            {weeks.map((week, index) => (
+                                <button key={index} className="flex flex-col items-center p-4 border rounded-lg hover:bg-blue-100 transition duration-200">
+                                    <span className="text-lg font-bold">{week}</span> {/* Week Name */}
+                                    <span className="text-sm text-gray-600">{subjects[0]}</span> {/* Subject Name */}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Left Side List for Desktop */}
+                <div className="hidden md:w-1/3 md:p-4 md:flex md:flex-col md:space-y-4"> {/* Allocating 1/3 of the page */}
+                    {weeks.map((week, index) => (
+                        <button key={index} className="flex flex-col items-center p-4 border rounded-lg hover:bg-blue-100 transition duration-200">
+                            <span className="text-lg font-bold">{week}</span> {/* Week Name */}
+                            <span className="text-sm text-gray-600">{subjects[0]}</span> {/* Subject Name */}
+                        </button>
+                    ))}
                 </div>
 
                 {/* Right Side Empty Space */}

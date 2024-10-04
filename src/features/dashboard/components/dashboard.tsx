@@ -103,8 +103,23 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Main Content */}
-            <div className="flex-grow flex items-center justify-center">
-                <h1 className="text-2xl">{t('dashboard.welcome')}</h1> {/* Translated Welcome Message */}
+            <div className="flex-grow flex">
+                {/* Left Side List */}
+                <div className="w-1/3 p-4"> {/* Allocating 1/3 of the page */}
+                    <div className="flex flex-col space-y-4"> {/* Container for the list */}
+                        {['Week 1', 'Week 2', 'Week 3', 'Week 4'].map((week, index) => (
+                            <button key={index} className="flex flex-col items-center p-4 border rounded-lg hover:bg-blue-100 transition duration-200">
+                                <span className="text-lg font-bold">{week}</span> {/* Week Name */}
+                                <span className="text-sm text-gray-600">Polynomials</span> {/* Subject Name */}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Right Side Empty Space */}
+                <div className="flex-grow p-4"> {/* Remaining space for future changes */}
+                    {/* Future content can be added here */}
+                </div>
             </div>
         </div>
     );

@@ -5,6 +5,7 @@ import aoaLogo from '../../../assets/aoa-logo-notext.png'; // Adjust the path ba
 import userIcon from '../../../assets/user-icon.png'; // Adjust the path for user icon
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesome
 import { faBook } from '@fortawesome/free-solid-svg-icons'; // Import a book icon for units
+import { faFileDownload } from '@fortawesome/free-solid-svg-icons'; // Import file download icon
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -141,7 +142,28 @@ const Dashboard: React.FC = () => {
 
                 {/* Right Side Empty Space */}
                 <div className="flex-grow p-4"> {/* Remaining space for future changes */}
-                    {/* Future content can be added here */}
+                    <div className="flex flex-col items-center mb-4"> {/* Centering container */}
+                        <button className="btn btn-primary mb-2">{t('pass_test')}</button> {/* Button to pass the test */}
+                        <a href="/path/to/file" className="flex items-center"> {/* File download link */}
+                            <FontAwesomeIcon icon={faFileDownload} className="mr-2" /> {/* Download icon */}
+                            {t('download_file')} {/* Multilanguage support */}
+                        </a>
+                    </div>
+                    <table className="min-w-full border-collapse border border-gray-200"> {/* Table with data */}
+                        <thead>
+                            <tr>
+                                <th className="border border-gray-300 p-2">{t('header_1')}</th> {/* Multilanguage support */}
+                                <th className="border border-gray-300 p-2">{t('header_2')}</th> {/* Multilanguage support */}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="border border-gray-300 p-2">{t('data_1')}</td> {/* Multilanguage support */}
+                                <td className="border border-gray-300 p-2">{t('data_2')}</td> {/* Multilanguage support */}
+                            </tr>
+                            {/* Add more rows as needed */}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

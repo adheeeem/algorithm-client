@@ -6,12 +6,13 @@ import userIcon from '../../../assets/user-icon.png'; // Adjust the path for use
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesome
 import { faBook } from '@fortawesome/free-solid-svg-icons'; // Import a book icon for units
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons'; // Import file download icon
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage menu visibility
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to manage dropdown visibility
-
+    const navigate = useNavigate();
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         i18n.changeLanguage(event.target.value);
     };
@@ -143,7 +144,7 @@ const Dashboard: React.FC = () => {
                 {/* Right Side Empty Space */}
                 <div className="flex-grow p-4"> {/* Remaining space for future changes */}
                     <div className="flex flex-col items-center mb-4"> {/* Centering container */}
-                        <button className="btn btn-primary mb-2">{t('pass_test')}</button> {/* Button to pass the test */}
+                        <button className="btn btn-primary mb-2" onClick={() => navigate('/test')}>{t('pass_test')}</button> {/* Button to pass the test */}
                         <a href="/path/to/file" className="flex items-center"> {/* File download link */}
                             <FontAwesomeIcon icon={faFileDownload} className="mr-2" /> {/* Download icon */}
                             {t('download_file')} {/* Multilanguage support */}

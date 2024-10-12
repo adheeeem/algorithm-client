@@ -59,11 +59,13 @@ const QuestionForm: React.FC = () => {
                 <textarea className="w-full p-2 border rounded-lg" value={formData.question_ru} onChange={(e) => handleChange(e, 'question_ru')} required />
             </div>
             {['options_tj', 'options_en', 'options_ru'].map((field, langIndex) => (
-                <div key={field} className="mb-4">
+                <div key={field} className="mb-4 bg-gray-800 text-white p-4">
                     <label className="block font-semibold">Options ({field === 'options_tj' ? 'TJ' : field === 'options_en' ? 'EN' : 'RU'}):</label>
-                    {formData[field].map((option: string, index: number) => (  // Specify type for option
-                        <input key={index} className="w-full p-2 border rounded-lg mb-2" value={option} onChange={(e) => handleArrayChange(e, index, field)} required />
-                    ))}
+                    <div className="grid grid-cols-2 gap-2">
+                        {formData[field].map((option: string, index: number) => (
+                            <input key={index} className="w-full p-2 border rounded-lg mb-2 bg-gray-700 text-white" value={option} onChange={(e) => handleArrayChange(e, index, field)} required />
+                        ))}
+                    </div>
                 </div>
             ))}
             <div className="mb-4">

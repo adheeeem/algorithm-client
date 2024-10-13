@@ -52,7 +52,10 @@ const QuestionForm: React.FC = () => {
 
         try {
             const result = await createQuestion(formData);
-            setMessage(`Question created successfully with ID: ${result}`);
+            if (result.statusCode == 200)
+                setMessage(`Question created successfully with ID: ${result.data}`);
+            else
+                setMessage(`Error occured while creating question: ${result.message}`);
         } catch (error) {
             console.error('Error creating question:', error);
             setMessage('Failed to create the question. Please try again.');

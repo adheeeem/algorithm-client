@@ -11,3 +11,15 @@ export type Question = {
     answerId: number;
     [key: string]: any;
 };
+
+export type ErrorResponse = {
+    statusCode: number,
+    message: string,
+    details: string
+}
+
+export type Response<T = any> = {
+    statusCode: number,
+    message: string,
+    data: T | null
+}

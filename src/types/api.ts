@@ -23,3 +23,8 @@ export type Response<T = any> = {
     message: string,
     data: T | null
 }
+
+export type ListResponse<T = any> = {
+    total: number,
+    items: T[]
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-// import { InlineMath } from 'react-katex';
+import { InlineMath, BlockMath } from 'react-katex';
 import 'katex/dist/katex.min.css'; // Import KaTeX CSS
 import { queryQuestionsWithPagination } from '@/features/test/api/get-questions'; // Adjust import path as needed
 import { useParams } from 'react-router-dom';
@@ -33,7 +33,7 @@ const Test: React.FC = () => {
                 {data?.items.map((question, index) => (
                     <div key={index} className="border p-4 rounded">
                         <p className="font-semibold">
-                            Test {index + 1}: {question.questionEn} {/* Display question text */}
+                            Test {index + 1}: <BlockMath math={question.questionEn}/>
                         </p>
                         <div className="flex flex-col">
                             {question.optionsEn.map((option, optIndex) => (

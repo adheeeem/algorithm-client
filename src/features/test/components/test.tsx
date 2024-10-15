@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { InlineMath, BlockMath } from 'react-katex';
+import { BlockMath } from 'react-katex';
 import 'katex/dist/katex.min.css'; // Import KaTeX CSS
 import { queryQuestionsWithPagination } from '@/features/test/api/get-questions'; // Adjust import path as needed
 import { useParams } from 'react-router-dom';

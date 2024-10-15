@@ -12,6 +12,7 @@
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@types/react-latex": "^2.0.3",
     "axios": "^1.7.7",
     "i18next": "^23.15.1",
     "katex": "^0.16.11",
@@ -19,8 +20,11 @@
     "react-dom": "^18.3.1",
     "react-i18next": "^15.0.2",
     "react-katex": "^3.0.1",
+    "react-latex": "^2.0.0",
+    "react-markdown": "^9.0.1",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.26.2",
+    "remark-math": "^6.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

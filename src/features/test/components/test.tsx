@@ -1,8 +1,8 @@
-import React from 'react';
-import { useState } from 'react';
-import { BlockMath } from 'react-katex';
+import React, { useState } from 'react';
+import Latex from 'react-latex'
 import 'katex/dist/katex.min.css'; // Import KaTeX CSS
 import { queryQuestionsWithPagination } from '@/features/test/api/get-questions'; // Adjust import path as needed
+import { deleteQuestion } from '@/features/test/api/delete-question'; // Import deleteQuestion function
 import { useParams } from 'react-router-dom';
 
 const Test: React.FC = () => {
@@ -11,7 +11,21 @@ const Test: React.FC = () => {
     const parsedUnitNumber = unitNumber ? Number(unitNumber) : undefined;
     const parsedWeekNumber = weekNumber ? Number(weekNumber) : undefined;
     const parsedGrade = grade ? Number(grade) : undefined;
-    const { data, isLoading, isError } = queryQuestionsWithPagination(parsedWeekNumber, parsedUnitNumber, parsedGrade);
+    const { data, isLoading, isError, refetch } = queryQuestionsWithPagination(parsedWeekNumber, parsedUnitNumber, parsedGrade); // Add refetch for refreshing data after deletion
+
+    // Function to handle question deletion
+    const handleDelete = async (id?: number) => {
+        if (window.confirm('Are you sure you want to delete this question?')) {
+            try {
+                await deleteQuestion(id);
+                alert(`Question ${id} deleted successfully.`);
+                refetch(); // Refetch the data to update the list after deletion
+            } catch (error) {
+                console.error('Error deleting question:', error);
+                alert('Failed to delete the question.');
+            }
+        }
+    };
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -35,14 +49,17 @@ const Test: React.FC = () => {
                     <div key={index} className="border p-4 rounded">
                         <h1 className='text-center'>Test: {question.id}</h1>
                         <p className="font-semibold">
-                            EN: <BlockMath math={question.questionEn} />
+                            EN: <Latex>{question.questionEn}</Latex>
+                        </p>
+
+                        <p className="font-semibold">
+                            RU: <Latex>{question.questionRu}</Latex>
                         </p>
                         <p className="font-semibold">
-                            RU: <BlockMath math={question.questionRu} />
+                            TJ: <Latex>{question.questionTj}</Latex>
                         </p>
-                        <p className="font-semibold">
-                            TJ: <BlockMath math={question.questionTj} />
-                        </p>
+
+                        {/* Options Section */}
                         <div className="flex flex-col">
                             <h1>EN</h1>
                             {question.optionsEn.map((option, optIndex) => (
@@ -70,7 +87,17 @@ const Test: React.FC = () => {
                                 </label>
                             ))}
                         </div>
-                        <h1 className='text-center'>Answer index: {question.answerId}</h1>
+                        <h1 className='text-center'>Answer index: {question.answerId}; Week: {question.weekNumber}; Unit: {question.unitNumber} </h1>
+
+                        {/* Delete Button */}
+                        <div className="text-right mt-4">
+                            <button
+                                onClick={() => handleDelete(question.id)}
+                                className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200"
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 ))}
             </div>

@@ -87,7 +87,7 @@ const Test: React.FC = () => {
                                 </label>
                             ))}
                         </div>
-                        <h1 className='text-center'>Answer index: {question.answerId}; Week: {question.weekNumber}; Unit: {question.unitNumber} </h1>
+                        <h1 className='text-center'>Answer index: {question.answerId}; Week: {question.weekNumber}; Unit: {question.unitNumber}; Grade: {question.grade} </h1>
 
                         {/* Delete Button */}
                         <div className="text-right mt-4">

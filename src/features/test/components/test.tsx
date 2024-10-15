@@ -7,10 +7,11 @@ import { useParams } from 'react-router-dom';
 
 const Test: React.FC = () => {
     const [page, setPage] = useState(1);
-    const { unitNumber, weekNumber } = useParams<{ unitNumber: string; weekNumber: string }>();
+    const { unitNumber, weekNumber, grade } = useParams<{ unitNumber: string; weekNumber: string; grade: string }>();
     const parsedUnitNumber = unitNumber ? Number(unitNumber) : undefined;
     const parsedWeekNumber = weekNumber ? Number(weekNumber) : undefined;
-    const { data, isLoading, isError } = queryQuestionsWithPagination(parsedWeekNumber, parsedUnitNumber);
+    const parsedGrade = grade ? Number(grade) : undefined;
+    const { data, isLoading, isError } = queryQuestionsWithPagination(parsedWeekNumber, parsedUnitNumber, parsedGrade);
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -32,16 +33,44 @@ const Test: React.FC = () => {
             <div className="space-y-4">
                 {data?.items.map((question, index) => (
                     <div key={index} className="border p-4 rounded">
+                        <h1 className='text-center'>Test: {question.id}</h1>
                         <p className="font-semibold">
-                            Test {index + 1}: <BlockMath math={question.questionEn}/>
+                            EN: <BlockMath math={question.questionEn} />
+                        </p>
+                        <p className="font-semibold">
+                            RU: <BlockMath math={question.questionRu} />
+                        </p>
+                        <p className="font-semibold">
+                            TJ: <BlockMath math={question.questionTj} />
                         </p>
                         <div className="flex flex-col">
+                            <h1>EN</h1>
                             {question.optionsEn.map((option, optIndex) => (
                                 <label key={optIndex}>
+                                    <span className='pr-2'>{optIndex}</span>
                                     <input type="radio" name={`question${index + 1}`} value={optIndex} /> {option}
                                 </label>
                             ))}
                         </div>
+                        <div className="flex flex-col">
+                            <h1>RU</h1>
+                            {question.optionsRu.map((option, optIndex) => (
+                                <label key={optIndex}>
+                                    <span className='pr-2'>{optIndex}</span>
+                                    <input type="radio" name={`question${index + 1}`} value={optIndex} /> {option}
+                                </label>
+                            ))}
+                        </div>
+                        <div className="flex flex-col">
+                            <h1>TJ</h1>
+                            {question.optionsTj.map((option, optIndex) => (
+                                <label key={optIndex}>
+                                    <span className='pr-2'>{optIndex}</span>
+                                    <input type="radio" name={`question${index + 1}`} value={optIndex} /> {option}
+                                </label>
+                            ))}
+                        </div>
+                        <h1 className='text-center'>Answer index: {question.answerId}</h1>
                     </div>
                 ))}
             </div>

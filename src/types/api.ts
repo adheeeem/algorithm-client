@@ -1,4 +1,5 @@
 export type Question = {
+    id: number;
     questionTj: string;
     questionEn: string;
     questionRu: string;

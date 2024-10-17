@@ -1,5 +1,6 @@
 export type Question = {
     id?: number;
+    imageId?: string;
     questionTj: string;
     questionEn: string;
     questionRu: string;

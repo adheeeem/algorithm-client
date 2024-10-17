@@ -58,7 +58,7 @@ const Test: React.FC = () => {
                         <p className="font-semibold">
                             TJ: <Latex>{question.questionTj}</Latex>
                         </p>
-
+                        <img src={`https://goodstorage.blob.core.windows.net/algorithm-questions/${question.imageId}`} alt="" />
                         {/* Options Section */}
                         <div className="flex flex-col">
                             <h1>EN</h1>

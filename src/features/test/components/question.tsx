@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Question } from '@/types/api';
-import { createQuestion } from '@/features/test/api/create-question';
+import { createQuestionWithOptionalImage } from '@/features/test/api/create-question';
 
 const QuestionForm: React.FC = () => {
     const [formData, setFormData] = useState<Question>({
@@ -16,6 +16,7 @@ const QuestionForm: React.FC = () => {
         answerId: 0,
     });
 
+    const [imageFile, setImageFile] = useState<File | undefined>(undefined); // State for the image file
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
 
@@ -38,6 +39,14 @@ const QuestionForm: React.FC = () => {
         setFormData((prev) => ({ ...prev, [field]: updatedOptions }));
     };
 
+    // Function to handle image file selection
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setImageFile(file); // Store the selected file
+        }
+    };
+
     // Function to handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,11 +60,14 @@ const QuestionForm: React.FC = () => {
         setMessage(null); // Reset any previous messages
 
         try {
-            const result = await createQuestion(formData);
-            if (result.statusCode == 200)
+            // Use the function to create a question with an optional image
+            const result = await createQuestionWithOptionalImage(formData, imageFile);
+
+            if (result.statusCode === 200) {
                 setMessage(`Question created successfully with ID: ${result.data}`);
-            else
-                setMessage(`Error occured while creating question: ${result.message}`);
+            } else {
+                setMessage(`Error occurred while creating question: ${result.message}`);
+            }
         } catch (error) {
             console.error('Error creating question:', error);
             setMessage('Failed to create the question. Please try again.');
@@ -101,11 +113,12 @@ const QuestionForm: React.FC = () => {
                 )
             )}
 
+            {/* Week Number Select */}
             <div className="mb-4">
                 <label className="block font-semibold">Week Number:</label>
                 <select
                     className="w-full p-2 border rounded-lg bg-gray-700 text-white"
-                    value={formData.week_number}
+                    value={formData.weekNumber}
                     onChange={(e) => handleInputChange(e, 'weekNumber')}
                     required
                 >
@@ -117,11 +130,12 @@ const QuestionForm: React.FC = () => {
                 </select>
             </div>
 
+            {/* Unit Number Select */}
             <div className="mb-4">
                 <label className="block font-semibold">Unit Number:</label>
                 <select
                     className="w-full p-2 border rounded-lg bg-gray-700 text-white"
-                    value={formData.unit_number}
+                    value={formData.unitNumber}
                     onChange={(e) => handleInputChange(e, 'unitNumber')}
                     required
                 >
@@ -133,6 +147,7 @@ const QuestionForm: React.FC = () => {
                 </select>
             </div>
 
+            {/* Grade Select */}
             <div className="mb-4">
                 <label className="block font-semibold">Grade:</label>
                 <select
@@ -149,16 +164,28 @@ const QuestionForm: React.FC = () => {
                 </select>
             </div>
 
+            {/* Answer ID Input */}
             <div className="mb-4">
                 <label className="block font-semibold">Answer ID (0-3):</label>
                 <input
                     type="number"
                     className="w-full p-2 border rounded-lg bg-gray-700 text-white"
-                    value={formData.answer_id}
+                    value={formData.answerId}
                     onChange={(e) => handleInputChange(e, 'answerId')}
                     min="0"
                     max="3"
                     required
+                />
+            </div>
+
+            {/* Image Upload */}
+            <div className="mb-4">
+                <label className="block font-semibold">Upload Image (Optional):</label>
+                <input
+                    type="file"
+                    accept="image/*"
+                    className="w-full p-2 border rounded-lg bg-gray-700 text-white"
+                    onChange={handleImageChange}
                 />
             </div>
 

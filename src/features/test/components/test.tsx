@@ -47,7 +47,7 @@ const Test: React.FC = () => {
             <div className="space-y-4">
                 {data?.items.map((question, index) => (
                     <div key={index} className="border p-4 rounded">
-                        <h1 className='text-center'>Test: {question.id}</h1>
+                        <h1 className='text-center'>Test id: {question.id}</h1>
                         <p className="font-semibold">
                             EN: <Latex>{question.questionEn}</Latex>
                         </p>

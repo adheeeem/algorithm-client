@@ -93,8 +93,8 @@ export const useLogin = (login: Login) => {
 
 export function useLogout(defaultPage: string) {
     const navigate = useNavigate();
-    localStorage.removeItem('accessToken');
     const logout = () => {
+        localStorage.removeItem('accessToken');
         navigate(defaultPage);
     };
 
@@ -109,7 +109,7 @@ export const ProtectedRoute = ({ children, roles = [] }: { children: React.React
     if (isLoading) {
         return <div>Loading...</div>; // Or your custom loading component
     }
-
+    console.log("shit: ", userData?.data);
     if (userData?.data != null && (userData?.statusCode !== 200 || !roles.includes(userData?.data?.role!))) {
         console.log("not authorized: ", userData?.data);
         return (

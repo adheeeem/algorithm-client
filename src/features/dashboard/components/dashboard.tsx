@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import { Link, useNavigate } from 'react-router-dom'; // Import Link for navigation
 import aoaLogo from '../../../assets/aoa-logo-notext.png'; // Adjust the path based on your folder structure
 import userIcon from '../../../assets/user-icon.png'; // Adjust the path for user icon
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesome
 import { faBook } from '@fortawesome/free-solid-svg-icons'; // Import a book icon for units
-import { faFileDownload } from '@fortawesome/free-solid-svg-icons'; // Import file download icon
-import { useNavigate } from 'react-router-dom';
+import { faFileDownload } from '@fortawesome/free-solid-svg-icons'; 
+import { useLogout, useUser } from '@/lib/auth';
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage menu visibility
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State to manage dropdown visibility
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
     const navigate = useNavigate();
+    const user = useUser();
+    const logout = useLogout('/login');
+
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         i18n.changeLanguage(event.target.value);
     };
@@ -24,6 +27,8 @@ const Dashboard: React.FC = () => {
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown visibility
     };
+
+    
 
     // Example unit completion status (true for completed, false for not)
     const unitCompletionStatus = Array(8).fill(false);
@@ -46,8 +51,8 @@ const Dashboard: React.FC = () => {
                             </svg>
                         </button>
                     </div>
-                    <div className="absolute right-4">
-                        <select className="select select-bordered" onChange={handleLanguageChange}>
+                    <div className="absolute right-4 flex items-center">
+                        <select className="select select-bordered mr-2" onChange={handleLanguageChange}>
                             <option value="en">EN</option>
                             <option value="ru">RU</option>
                             <option value="tj">TJ</option>
@@ -62,6 +67,9 @@ const Dashboard: React.FC = () => {
                     <Link to="/dashboard" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
                     <Link to="/standings" className="btn btn-outline btn-primary">{t('header.standings')}</Link>
                     <Link to="/profile" className="btn btn-outline btn-primary">{t('header.profile')}</Link>
+                    <button onClick={() => logout()} className="btn btn-outline btn-error">
+                        {t('header.logout')}
+                    </button>
                 </nav>
             </header>
 
@@ -72,6 +80,9 @@ const Dashboard: React.FC = () => {
                         <Link to="/dashboard" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
                         <Link to="/standings" className="btn btn-outline btn-primary">{t('header.standings')}</Link>
                         <Link to="/profile" className="btn btn-outline btn-primary">{t('header.profile')}</Link>
+                        <button onClick={() => logout()} className="btn btn-outline btn-error">
+                            {t('header.logout')}
+                        </button>
                     </nav>
                 </div>
             )}
@@ -80,10 +91,10 @@ const Dashboard: React.FC = () => {
             <div className="flex flex-col items-center justify-center p-4 bg-base-200 md:flex-row md:justify-between">
                 {/* User Info */}
                 <div className="flex items-center justify-center flex-col text-center mb-4 md:mb-0">
-                    <img src={userIcon} alt="User Icon" className="h-10 w-10 mb-2" /> {/* User Icon */}
+                    <img src={userIcon} alt="User Icon" className="h-10 w-10 mb-2" />
                     <div>
-                        <span className="font-bold">John Doe</span> {/* Full Name */}
-                        <div className="text-sm">{t('user.grade')}: 10</div> {/* Grade */}
+                        <span className="font-bold">{user ? `${user.data?.data?.firstname} ${user.data?.data?.lastname}` : 'Loading...'}</span>
+                        <div className="text-sm">{t('user.grade')}: {user ? user.data?.data?.grade : ''}</div>
                     </div>
                 </div>
 
@@ -107,7 +118,7 @@ const Dashboard: React.FC = () => {
                 {/* Score */}
                 <div className="text-lg font-bold text-center mt-2 md:mt-0">
                     <div className="bg-blue-500 text-white rounded-lg p-2">
-                        {t('user.score')}: 95 {/* Example Score */}
+                        {t('user.score')}: {user ? user.data?.data?.totalScore : ''}
                     </div>
                 </div>
             </div>
@@ -150,17 +161,17 @@ const Dashboard: React.FC = () => {
                             {t('download_file')} {/* Multilanguage support */}
                         </a>
                     </div>
-                    <table className="min-w-full border-collapse border border-gray-200"> {/* Table with data */}
+                    <table className="min-w-full border-collapse border border-gray-200">
                         <thead>
                             <tr>
-                                <th className="border border-gray-300 p-2">{t('header_1')}</th> {/* Multilanguage support */}
-                                <th className="border border-gray-300 p-2">{t('header_2')}</th> {/* Multilanguage support */}
+                                <th className="border border-gray-300 p-2">{t('header_1')}</th>
+                                <th className="border border-gray-300 p-2">{t('header_2')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td className="border border-gray-300 p-2">{t('data_1')}</td> {/* Multilanguage support */}
-                                <td className="border border-gray-300 p-2">{t('data_2')}</td> {/* Multilanguage support */}
+                                <td className="border border-gray-300 p-2">{t('data_1')}</td>
+                                <td className="border border-gray-300 p-2">{t('data_2')}</td>
                             </tr>
                             {/* Add more rows as needed */}
                         </tbody>

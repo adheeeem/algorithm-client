@@ -30,3 +30,51 @@ export type ListResponse<T = any> = {
     total: number,
     items: T[]
 }
+
+export type Login = {
+    username: string,
+    password: string
+}
+
+export type LoginResponse = {
+    accessToken: string,
+    refreshToken: string
+}
+
+export type User = {
+    id: number,
+    username: string,
+    firstname: string,
+    lastname: string,
+    email: string,
+    phone: string,
+    grade: number,
+    schoolId: number,
+    totalScore: number,
+    dateOfBirth: Date,
+    gender: number,
+    role: number
+    isActive: boolean
+}
+
+export type School = {
+    id: number,
+    name: string,
+    region: string,
+    city: string,
+    country: string
+}
+
+export type Student = {
+    id: number,
+    firstname: string,
+    lastname: string,
+    username: string,
+    password: string,
+    phone: string,
+    grade: number,
+    schoolId: number,
+    email?: string,
+    dateOfBirth: Date,
+    gender: number
+}

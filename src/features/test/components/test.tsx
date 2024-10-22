@@ -4,7 +4,7 @@ import 'katex/dist/katex.min.css'; // Import KaTeX CSS
 import { queryQuestionsWithPagination } from '@/features/test/api/get-questions'; // Adjust import path as needed
 import { deleteQuestion } from '@/features/test/api/delete-question'; // Import deleteQuestion function
 import { useParams } from 'react-router-dom';
-
+import { SquareLoader } from '@/components/ui/loader/square-loader';
 const Test: React.FC = () => {
     const [page, setPage] = useState(1);
     const { unitNumber, weekNumber, grade } = useParams<{ unitNumber: string; weekNumber: string; grade: string }>();
@@ -28,7 +28,7 @@ const Test: React.FC = () => {
     };
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <SquareLoader/>
     }
 
     if (isError) {

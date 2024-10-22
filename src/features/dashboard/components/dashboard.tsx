@@ -28,8 +28,6 @@ const Dashboard: React.FC = () => {
         setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown visibility
     };
 
-    
-
     // Example unit completion status (true for completed, false for not)
     const unitCompletionStatus = Array(8).fill(false);
     unitCompletionStatus[0] = true; // Example: Unit 3 is completed

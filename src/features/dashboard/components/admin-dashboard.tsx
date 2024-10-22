@@ -1,16 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLogout } from '@/lib/auth';
 
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const logout = useLogout('/login');
 
   const handleNavigation = (path: string) => {
     navigate(path);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    navigate('/login');
   };
   
   return (
@@ -19,7 +16,7 @@ const AdminDashboard: React.FC = () => {
         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         <button
           className="btn btn-sm btn-outline btn-error"
-          onClick={handleLogout}
+          onClick={() => logout()}
         >
           Logout
         </button>

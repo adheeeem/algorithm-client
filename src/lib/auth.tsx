@@ -1,8 +1,9 @@
 import { Login, LoginResponse, Response, User } from "@/types/api";
 import { api } from "@/lib/api-client";
 import { isErrorResponse } from "@/lib/utils";
-import { useMutation, useQuery } from 'react-query';
+import { isError, useMutation, useQuery } from 'react-query';
 import { useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { SquareLoader } from '@/components/ui/loader/square-loader';
 
 const loginUser = async (loginRequest: Login): Promise<Response<LoginResponse>> => {
     const result: Response<LoginResponse> = {
@@ -37,19 +38,7 @@ const logoutUser = async (page: string): Promise<void> => {
 };
 
 const getUser = async (): Promise<Response<User>> => {
-    const result: Response<User> = {
-        statusCode: 0,
-        message: "",
-        data: null
-    };
-    console.log("getting token");
     const accessToken = localStorage.getItem('accessToken');
-
-    if (!accessToken) {
-        result.statusCode = 401;
-        result.message = "No access token found";
-        return result;
-    }
 
     const config = {
         headers: {
@@ -57,37 +46,38 @@ const getUser = async (): Promise<Response<User>> => {
         }
     };
 
-    try {
-        const response = await api.get(`/user`, config);
-        if (isErrorResponse(response.data)) {
-            result.statusCode = response.data.statusCode;
-            result.message = response.data.message;
-        } else {
-            result.statusCode = 200;
-            const userData = response.data as User;
-            result.data = userData;
-        }
-    } catch (error) {
-        result.statusCode = 500;
-        result.message = "An error occurred while fetching user data";
+    const response = await api.get(`/user`, config);
+    
+    if (isErrorResponse(response.data)) {
+        return {
+            statusCode: response.data.statusCode,
+            message: response.data.message,
+            data: null
+        };
+    } else {
+        return {
+            statusCode: 200,
+            message: "",
+            data: response.data as User
+        };
     }
-
-    return result;
 };
 
 export const useUser = () => useQuery<Response<User>>({
     queryKey: ['user'],
-    queryFn: () => getUser(),
-    retry: true, // Don't retry on failure
+    queryFn: async () => {
+        try {
+            return await getUser()
+        } catch (error) {
+            throw error
+        }
+    },
+    retry: false, // Don't retry on failure
 });
 
 export const useLogin = (login: Login) => {
-    const navigate = useNavigate();
     return useMutation<Response<LoginResponse>, Login>({
-        mutationFn: () => loginUser(login),
-        onSuccess: async () => {
-            navigate("/dashboard")
-        }
+        mutationFn: () => loginUser(login)
     });
 };
 
@@ -102,15 +92,14 @@ export function useLogout(defaultPage: string) {
 }
 
 export const ProtectedRoute = ({ children, roles = [] }: { children: React.ReactNode, roles?: number[] }) => {
-    const { data: userData, isLoading } = useUser();
+    const { data: userData, isLoading, isError } = useUser();
     const location = useLocation();
 
-
     if (isLoading) {
-        return <div>Loading...</div>; // Or your custom loading component
+        return <SquareLoader />; // Or your custom loading component
     }
-    console.log("shit: ", userData?.data);
-    if (userData?.data != null && (userData?.statusCode !== 200 || !roles.includes(userData?.data?.role!))) {
+    console.log("User data: ", userData?.data);
+    if (isError || (!!userData?.data && (userData?.statusCode !== 200 || !roles.includes(userData?.data?.role!)))) {
         console.log("not authorized: ", userData?.data);
         return (
             <Navigate

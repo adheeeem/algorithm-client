@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import aoaLogo from '../../../assets/aoa-logo.png'; 
+import aoaLogo from '../../../assets/aoa-logo.png';
 import { useLogin } from '@/lib/auth';
 import { useUser } from '@/lib/auth';
+import { SquareLoader } from '@/components/ui/loader/square-loader';
 
 const LoginPage: React.FC = () => {
     const { t, i18n } = useTranslation();
-    const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const login = useLogin({ username, password });   
+    const [error, ] = useState('');
+    const login = useLogin({ username, password });
     const { data: userData, isLoading } = useUser();
+    const navigate = useNavigate();
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         i18n.changeLanguage(event.target.value);
@@ -25,7 +26,7 @@ const LoginPage: React.FC = () => {
     }, [userData, navigate]);
 
     if (isLoading) {
-        return <div>Loading...</div>; // Or your custom loading component
+        return <SquareLoader /> // Or your custom loading component
     }
 
     return (
@@ -43,19 +44,19 @@ const LoginPage: React.FC = () => {
                     <label className="label">
                         <span className="label-text">{t('username')}</span> {/* Translated Username */}
                     </label>
-                    <input 
-                        type="text" 
-                        placeholder={t('username')} 
-                        className="input input-bordered" 
+                    <input
+                        type="text"
+                        placeholder={t('username')}
+                        className="input input-bordered"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
                     <label className="label">
                         <span className="label-text">{t('password')}</span> {/* Translated Password */}
                     </label>
-                    <input 
-                        type="password" 
-                        placeholder={t('password')} 
+                    <input
+                        type="password"
+                        placeholder={t('password')}
                         className="input input-bordered"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}

@@ -11,9 +11,7 @@ const AdminDashboard: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    if (localStorage.getItem('accessToken') === null) {
-      navigate('/login');
-    }
+    window.location.reload();
   };
 
   return (

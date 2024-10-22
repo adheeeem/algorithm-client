@@ -30,9 +30,7 @@ const Dashboard: React.FC = () => {
 
     const handleLogout = () => {
         logout();
-        if (localStorage.getItem('accessToken') === null) {
-            navigate('/login');
-        }
+        window.location.reload(); 
     };
 
     // Example unit completion status (true for completed, false for not)

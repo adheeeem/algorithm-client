@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Question } from '@/types/api';
-import { createQuestionWithOptionalImage } from '@/features/test/api/create-question';
+import { useCreateQuestionWithOptionalImage } from '@/features/test/api/create-question';
 
 const QuestionForm: React.FC = () => {
     const [formData, setFormData] = useState<Question>({
@@ -19,6 +19,8 @@ const QuestionForm: React.FC = () => {
     const [imageFile, setImageFile] = useState<File | undefined>(undefined); // State for the image file
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
+
+    const createQuestionMutation = useCreateQuestionWithOptionalImage();
 
     // Utility function for handling input changes
     const handleInputChange = (
@@ -60,8 +62,7 @@ const QuestionForm: React.FC = () => {
         setMessage(null); // Reset any previous messages
 
         try {
-            // Use the function to create a question with an optional image
-            const result = await createQuestionWithOptionalImage(formData, imageFile);
+            const result = await createQuestionMutation.mutateAsync({ question: formData, imageFile });
 
             if (result.statusCode === 200) {
                 setMessage(`Question created successfully with ID: ${result.data}`);

@@ -13,8 +13,8 @@ const Dashboard: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage menu visibility
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
     const navigate = useNavigate();
+    const logout = useLogout();
     const user = useUser();
-    const logout = useLogout('/login');
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         i18n.changeLanguage(event.target.value);
@@ -26,6 +26,13 @@ const Dashboard: React.FC = () => {
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen); // Toggle dropdown visibility
+    };
+
+    const handleLogout = () => {
+        logout();
+        if (localStorage.getItem('accessToken') === null) {
+            navigate('/login');
+        }
     };
 
     // Example unit completion status (true for completed, false for not)
@@ -65,7 +72,7 @@ const Dashboard: React.FC = () => {
                     <Link to="/dashboard" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
                     <Link to="/standings" className="btn btn-outline btn-primary">{t('header.standings')}</Link>
                     <Link to="/profile" className="btn btn-outline btn-primary">{t('header.profile')}</Link>
-                    <button onClick={() => logout()} className="btn btn-outline btn-error">
+                    <button onClick={handleLogout} className="btn btn-outline btn-error">
                         {t('header.logout')}
                     </button>
                 </nav>
@@ -78,7 +85,7 @@ const Dashboard: React.FC = () => {
                         <Link to="/dashboard" className="btn btn-outline btn-primary">{t('header.dashboard')}</Link>
                         <Link to="/standings" className="btn btn-outline btn-primary">{t('header.standings')}</Link>
                         <Link to="/profile" className="btn btn-outline btn-primary">{t('header.profile')}</Link>
-                        <button onClick={() => logout()} className="btn btn-outline btn-error">
+                        <button onClick={handleLogout} className="btn btn-outline btn-error">
                             {t('header.logout')}
                         </button>
                     </nav>

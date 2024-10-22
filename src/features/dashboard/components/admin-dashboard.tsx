@@ -4,19 +4,25 @@ import { useLogout } from '@/lib/auth';
 
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const logout = useLogout('/login');
-
+  const logout = useLogout();
   const handleNavigation = (path: string) => {
     navigate(path);
   };
-  
+
+  const handleLogout = () => {
+    logout();
+    if (localStorage.getItem('accessToken') === null) {
+      navigate('/login');
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
         <button
           className="btn btn-sm btn-outline btn-error"
-          onClick={() => logout()}
+          onClick={handleLogout}
         >
           Logout
         </button>

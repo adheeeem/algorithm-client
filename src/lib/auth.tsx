@@ -31,12 +31,6 @@ const loginUser = async (loginRequest: Login): Promise<Response<LoginResponse>> 
     return result;
 };
 
-const logoutUser = async (page: string): Promise<void> => {
-    const navigate = useNavigate();
-    localStorage.removeItem('accessToken');
-    navigate(page);
-};
-
 const getUser = async (): Promise<Response<User>> => {
     const accessToken = localStorage.getItem('accessToken');
 
@@ -47,7 +41,7 @@ const getUser = async (): Promise<Response<User>> => {
     };
 
     const response = await api.get(`/user`, config);
-    
+
     if (isErrorResponse(response.data)) {
         return {
             statusCode: response.data.statusCode,
@@ -75,21 +69,27 @@ export const useUser = () => useQuery<Response<User>>({
     retry: false, // Don't retry on failure
 });
 
-export const useLogin = (login: Login) => {
-    return useMutation<Response<LoginResponse>, Login>({
-        mutationFn: () => loginUser(login)
+export const useLogin = (credentials: Login) => {
+    const navigate = useNavigate();
+    return useMutation(() => loginUser(credentials), {
+        onSuccess: (data) => {
+            if (data.statusCode === 200 && data.data?.accessToken) {
+                localStorage.setItem('accessToken', data.data.accessToken);
+                navigate('/dashboard');
+            }
+        },
+        onError: (error) => {
+            console.error('Login failed:', error);
+            // Handle login error (e.g., show an error message)
+        }
     });
 };
 
-export function useLogout(defaultPage: string) {
-    const navigate = useNavigate();
-    const logout = () => {
-        localStorage.removeItem('accessToken');
-        navigate(defaultPage);
-    };
+const logoutUser = (): void => {
+    localStorage.removeItem('accessToken');
+};
 
-    return logout;
-}
+export const useLogout = () => logoutUser;
 
 export const ProtectedRoute = ({ children, roles = [] }: { children: React.ReactNode, roles?: number[] }) => {
     const { data: userData, isLoading, isError } = useUser();

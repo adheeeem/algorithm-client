@@ -1,7 +1,7 @@
 import { Login, LoginResponse, Response, User } from "@/types/api";
 import { api } from "@/lib/api-client";
 import { isErrorResponse } from "@/lib/utils";
-import { isError, useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { SquareLoader } from '@/components/ui/loader/square-loader';
 

@@ -23,7 +23,12 @@ const App: React.FC = () => {
               <Dashboard />
             </ProtectedRoute>
           } />
-          <Route path="/test" element={<Test />} />
+
+          <Route path="/test" element={
+            <ProtectedRoute roles={[1, 2, 3]}>
+              <Test />
+            </ProtectedRoute>
+          } />
           <Route path="/question" element={<QuestionForm />} />
           <Route path="/admin-dashboard" element={
             <ProtectedRoute roles={[1, 2, 3]}>

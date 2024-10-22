@@ -98,12 +98,11 @@ export const ProtectedRoute = ({ children, roles = [] }: { children: React.React
     if (isLoading) {
         return <SquareLoader />; // Or your custom loading component
     }
-    console.log("User data: ", userData?.data);
     if (isError || (!!userData?.data && (userData?.statusCode !== 200 || !roles.includes(userData?.data?.role!)))) {
-        console.log("not authorized: ", userData?.data);
         return (
+            console.log("navigating: ", userData?.data),
             <Navigate
-                to={`/not-found?redirectTo=${encodeURIComponent(location.pathname)}`}
+                to={`/login?redirectTo=${encodeURIComponent(location.pathname)}`}
                 replace
             />
         );

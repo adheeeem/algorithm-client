@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import aoaLogo from '../../../assets/aoa-logo.png';
 import { useLogin } from '@/lib/auth';
 import { useUser } from '@/lib/auth';
@@ -14,6 +14,7 @@ const LoginPage: React.FC = () => {
     const login = useLogin({ username, password });
     const { data: userData, isLoading } = useUser();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         i18n.changeLanguage(event.target.value);
@@ -29,16 +30,33 @@ const LoginPage: React.FC = () => {
         return <SquareLoader /> // Or your custom loading component
     }
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            await login.mutateAsync();
+            
+            // Check for redirectTo parameter in the URL
+            const searchParams = new URLSearchParams(location.search);
+            const redirectTo = searchParams.get('redirectTo');
+            
+            if (redirectTo) {
+                navigate(decodeURIComponent(redirectTo));
+            } else {
+                navigate('/dashboard'); // Default redirect if no redirectTo is specified
+            }
+        } catch (error) {
+            console.error('Login failed:', error);
+            // Handle login error (e.g., show an error message)
+        }
+    };
+
     return (
         <div className="flex flex-col md:flex-row h-screen relative">
             <div className="hidden md:flex w-1/2 bg-slate-300 items-center justify-center p-4"> {/* Hide on mobile */}
                 <img src={aoaLogo} alt="Aoa Logo" className="max-w-full h-auto" /> {/* Responsive image */}
             </div>
             <div className="w-full md:w-1/2 flex items-center justify-center p-4">
-                <form onSubmit={(e) => {
-                    e.preventDefault();
-                    login.mutate();
-                }} className="form-control w-full max-w-sm">
+                <form onSubmit={handleSubmit} className="form-control w-full max-w-sm">
                     <h1 className="text-3xl font-bold mb-6 text-center">{t('login')}</h1> {/* Translated Login text */}
                     {error && <div className="text-red-500 mb-4">{error}</div>}
                     <label className="label">
@@ -61,7 +79,9 @@ const LoginPage: React.FC = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <button type="submit" className="btn btn-primary mt-4">{t('login')}</button>
+                    <button type="submit" className="btn btn-primary mt-4" disabled={login.isLoading}>
+                        {login.isLoading ? 'Logging in...' : t('login')}
+                    </button>
                 </form>
             </div>
             <div className="absolute top-4 right-4">

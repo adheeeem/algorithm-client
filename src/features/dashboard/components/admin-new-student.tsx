@@ -3,6 +3,7 @@ import { Student, School } from '@/types/api';
 import { useSchools } from '@/features/dashboard/api/getters';
 import { useNavigate } from 'react-router-dom';
 import { useCreateStudent } from '@/features/dashboard/api/create-student';
+import { isErrorResponse } from '@/lib/utils';
 
 const AdminNewStudent: React.FC = () => {
     const navigate = useNavigate();
@@ -29,13 +30,24 @@ const AdminNewStudent: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            // Convert dateOfBirth to Date object before sending
-            const studentData = {
-                ...newStudent,
-                dateOfBirth: (new Date(newStudent.dateOfBirth!)).toISOString().split('T')[0]
+            const studentData: Omit<Student, 'id'> = {
+                firstname: newStudent.firstname!,
+                lastname: newStudent.lastname!,
+                username: newStudent.username!,
+                password: newStudent.password!,
+                phone: newStudent.phone!,
+                email: newStudent.email!,
+                dateOfBirth: new Date(newStudent.dateOfBirth!).toISOString(),
+                gender: Number(newStudent.gender),
+                schoolId: Number(newStudent.schoolId),
+                grade: Number(newStudent.grade)
             };
-            await createStudentMutation.mutateAsync(studentData);
-            alert('Student added successfully');
+            var response =await createStudentMutation.mutateAsync(studentData);
+            if (isErrorResponse(response)) {
+                alert(response.message);
+            } else {
+                alert('Student added successfully');
+            }
             // Reset form or redirect
         } catch (error) {
             alert('Error adding student');

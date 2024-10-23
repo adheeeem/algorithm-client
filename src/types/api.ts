@@ -75,6 +75,6 @@ export type Student = {
     grade: number,
     schoolId: number,
     email?: string,
-    dateOfBirth: Date,
+    dateOfBirth: string,
     gender: number
 }

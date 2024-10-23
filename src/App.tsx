@@ -19,7 +19,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={
-            <ProtectedRoute roles={[1, 2, 3]}>
+            <ProtectedRoute roles={[1, 2, 3, 4]}>
               <Dashboard />
             </ProtectedRoute>
           } />

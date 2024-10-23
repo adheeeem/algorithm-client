@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Student, School } from '@/types/api';
-import { api } from '@/lib/api-client';
 import { useSchools } from '@/features/dashboard/api/getters';
 import { useNavigate } from 'react-router-dom';
+import { useCreateStudent } from '@/features/dashboard/api/create-student';
 
 const AdminNewStudent: React.FC = () => {
     const navigate = useNavigate();
-    const { data: schoolsData, isLoading, isError: isSchoolError, error: schoolError } = useSchools();
+    const { data: schoolsData, isLoading: isSchoolsLoading, isError: isSchoolError, error: schoolError } = useSchools();
     const [newStudent, setNewStudent] = useState<Partial<Student>>({
         firstname: '',
         lastname: '',
@@ -16,9 +16,10 @@ const AdminNewStudent: React.FC = () => {
         grade: 1,
         schoolId: 0,
         email: '',
-        dateOfBirth: new Date(),
+        dateOfBirth: '', // Store as string initially
         gender: 0
     });
+    const createStudentMutation = useCreateStudent();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -28,18 +29,19 @@ const AdminNewStudent: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await api.post('/students', newStudent);
-            if (response.status === 200 || response.status === 201) {
-                alert('Student added successfully');
-                // Reset form or redirect
-            } else {
-                throw new Error('Failed to add student');
-            }
+            // Convert dateOfBirth to Date object before sending
+            const studentData = {
+                ...newStudent,
+                dateOfBirth: (new Date(newStudent.dateOfBirth!)).toISOString().split('T')[0]
+            };
+            await createStudentMutation.mutateAsync(studentData);
+            alert('Student added successfully');
+            // Reset form or redirect
         } catch (error) {
             alert('Error adding student');
         }
     };
-    if (isLoading) {
+    if (isSchoolsLoading) {
         return <div>Loading...</div>;
     }
 
@@ -165,7 +167,7 @@ const AdminNewStudent: React.FC = () => {
                         type="date"
                         id="dateOfBirth"
                         name="dateOfBirth"
-                        value={newStudent.dateOfBirth?.toISOString().split('T')[0]}
+                        value={newStudent.dateOfBirth as string}
                         onChange={handleInputChange}
                         className="input input-bordered w-full"
                         required
@@ -185,7 +187,13 @@ const AdminNewStudent: React.FC = () => {
                         <option value="1">Female</option>
                     </select>
                 </div>
-                <button type="submit" className="btn btn-primary">Add Student</button>
+                <button 
+                    type="submit" 
+                    className="btn btn-primary"
+                    disabled={createStudentMutation.isLoading}
+                >
+                    {createStudentMutation.isLoading ? 'Adding Student...' : 'Add Student'}
+                </button>
             </form>
         </div>
     );

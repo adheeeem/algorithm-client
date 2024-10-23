@@ -11,7 +11,6 @@ const loginUser = async (loginRequest: Login): Promise<Response<LoginResponse>> 
         message: "",
         data: {} as LoginResponse
     };
-    console.log("loginRequest: ", loginRequest);
     const response = await api.post(`/user/login`, loginRequest);
     if (isErrorResponse(response.data)) {
         result.statusCode = response.data.statusCode

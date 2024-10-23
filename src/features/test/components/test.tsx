@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Latex from 'react-latex'
 import 'katex/dist/katex.min.css'; // Import KaTeX CSS
 import { queryQuestionsWithPagination } from '@/features/test/api/get-questions'; // Adjust import path as needed
-import { deleteQuestion } from '@/features/test/api/delete-question'; // Import deleteQuestion function
+import { useDeleteQuestion } from '@/features/test/api/delete-question'; // Import useDeleteQuestion hook
 import { useParams } from 'react-router-dom';
 import { SquareLoader } from '@/components/ui/loader/square-loader';
 const Test: React.FC = () => {
@@ -13,11 +13,13 @@ const Test: React.FC = () => {
     const parsedGrade = grade ? Number(grade) : undefined;
     const { data, isLoading, isError, refetch } = queryQuestionsWithPagination(parsedWeekNumber, parsedUnitNumber, parsedGrade); // Add refetch for refreshing data after deletion
 
+    const deleteQuestionMutation = useDeleteQuestion();
+
     // Function to handle question deletion
     const handleDelete = async (id?: number) => {
         if (window.confirm('Are you sure you want to delete this question?')) {
             try {
-                await deleteQuestion(id);
+                await deleteQuestionMutation.mutateAsync(id);
                 alert(`Question ${id} deleted successfully.`);
                 refetch(); // Refetch the data to update the list after deletion
             } catch (error) {

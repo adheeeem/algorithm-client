@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Student, School } from '@/types/api';
-import { useSchools } from '@/features/dashboard/api/getters';
+import { useSchools } from '@/features/dashboard/api/get-school';
 import { useNavigate } from 'react-router-dom';
 import { useCreateStudent } from '@/features/dashboard/api/create-student';
 import { isErrorResponse } from '@/lib/utils';

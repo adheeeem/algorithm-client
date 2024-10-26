@@ -17,6 +17,7 @@ const Dashboard: React.FC = () => {
     const logout = useLogout();
     const user = useUser();
     const [selectedUnit, setSelectedUnit] = useState<number>(1); // Set default to 1
+    const [activeWeek, setActiveWeek] = useState(0); // Add this state for tracking active week
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         i18n.changeLanguage(event.target.value);
@@ -146,16 +147,22 @@ const Dashboard: React.FC = () => {
             )}
             <div className="flex-grow flex flex-col md:flex-row">
                 {/* Left Side List for Mobile */}
-                <div className="md:hidden p-4"> {/* Mobile Dropdown */}
+                <div className="md:hidden p-4">
                     <button onClick={toggleDropdown} className="btn btn-outline btn-primary w-full">
-                        {t('header.weeks')} {/* Button text for dropdown */}
+                        {t('header.weeks')}
                     </button>
                     {isDropdownOpen && (
                         <div className="flex flex-col space-y-2 mt-2">
                             {weeks.map((week, index) => (
-                                <button key={index} className="flex flex-col items-center p-4 border rounded-lg hover:bg-blue-100 transition duration-200">
-                                    <span className="text-lg font-bold">{week}</span> {/* Week Name */}
-                                    <span className="text-sm text-gray-600">{subjects[0]}</span> {/* Subject Name */}
+                                <button 
+                                    key={index} 
+                                    className={`flex flex-col items-center p-4 border rounded-lg transition duration-200 ${
+                                        activeWeek === index ? 'bg-blue-500 text-white' : 'hover:bg-blue-100'
+                                    }`}
+                                    onClick={() => setActiveWeek(index)}
+                                >
+                                    <span className="text-lg font-bold">{week}</span>
+                                    <span className="text-sm text-gray-600">{subjects[0]}</span>
                                 </button>
                             ))}
                         </div>
@@ -163,22 +170,29 @@ const Dashboard: React.FC = () => {
                 </div>
 
                 {/* Left Side List for Desktop */}
-                <div className="hidden md:w-1/3 md:p-4 md:flex md:flex-col md:space-y-4"> {/* Allocating 1/3 of the page */}
+                <div className="hidden md:w-1/3 md:p-4 md:flex md:flex-col md:space-y-4">
                     {weeks.map((week, index) => (
-                        <button key={index} className="flex flex-col items-center p-4 border rounded-lg hover:bg-blue-100 transition duration-200">
-                            <span className="text-lg font-bold">{week}</span> {/* Week Name */}
-                            <span className="text-sm text-gray-600">{subjects[0]}</span> {/* Subject Name */}
+                        <button 
+                            key={index} 
+                            className={`flex flex-col items-center p-4 border rounded-lg transition duration-200 ${
+                                activeWeek === index ? 'bg-blue-500 text-white' : 'hover:bg-blue-100'
+                            }`}
+                            onClick={() => setActiveWeek(index)}
+                        >
+                            <span className="text-lg font-bold">{week}</span>
+                            <span className="text-sm text-gray-600">{subjects[0]}</span>
                         </button>
                     ))}
                 </div>
 
                 {/* Right Side Content */}
                 <div className="flex-grow p-4">
-                    <div className="flex flex-col items-center mb-4"> {/* Centering container */}
-                        <button className="btn btn-primary mb-2" onClick={() => navigate('/test')}>{t('pass_test')}</button> {/* Button to pass the test */}
-                        <a href="/path/to/file" className="flex items-center"> {/* File download link */}
-                            <FontAwesomeIcon icon={faFileDownload} className="mr-2" /> {/* Download icon */}
-                            {t('download_file')} {/* Multilanguage support */}
+                    <h3 className="text-xl font-bold mb-4">{weeks[activeWeek]}</h3>
+                    <div className="flex flex-col items-center mb-4">
+                        <button className="btn btn-primary mb-2" onClick={() => navigate('/test')}>{t('pass_test')}</button>
+                        <a href="/path/to/file" className="flex items-center">
+                            <FontAwesomeIcon icon={faFileDownload} className="mr-2" />
+                            {t('download_file')}
                         </a>
                     </div>
                     <table className="min-w-full border-collapse border border-gray-200">

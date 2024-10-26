@@ -8,6 +8,7 @@ import { faBook } from '@fortawesome/free-solid-svg-icons'; // Import a book ico
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import { useLogout, useUser } from '@/lib/auth';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top of the file
+import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'; // Add this import
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -156,13 +157,18 @@ const Dashboard: React.FC = () => {
                             {weeks.map((week, index) => (
                                 <button 
                                     key={index} 
-                                    className={`flex flex-col items-center p-4 border rounded-lg transition duration-200 ${
-                                        activeWeek === index ? 'bg-blue-500 text-white' : 'hover:bg-blue-100'
+                                    className={`flex items-center p-3 rounded-lg transition duration-200 ${
+                                        activeWeek === index 
+                                            ? 'bg-blue-500 text-white shadow-md' 
+                                            : 'bg-white hover:bg-blue-50 border border-gray-200'
                                     }`}
                                     onClick={() => setActiveWeek(index)}
                                 >
-                                    <span className="text-lg font-bold">{week}</span>
-                                    <span className="text-sm text-gray-600">{subjects[0]}</span>
+                                    <FontAwesomeIcon icon={faCalendarAlt} className="mr-3 text-lg" />
+                                    <div className="flex flex-col items-start">
+                                        <span className="font-semibold">{week}</span>
+                                        <span className="text-xs opacity-75">{subjects[0]}</span>
+                                    </div>
                                 </button>
                             ))}
                         </div>
@@ -170,17 +176,25 @@ const Dashboard: React.FC = () => {
                 </div>
 
                 {/* Left Side List for Desktop */}
-                <div className="hidden md:w-1/3 md:p-4 md:flex md:flex-col md:space-y-4">
+                <div className="hidden md:w-1/3 md:p-4 md:flex md:flex-col md:space-y-3">
+                    
                     {weeks.map((week, index) => (
                         <button 
                             key={index} 
-                            className={`flex flex-col items-center p-4 border rounded-lg transition duration-200 ${
-                                activeWeek === index ? 'bg-blue-500 text-white' : 'hover:bg-blue-100'
+                            className={`flex items-center p-4 rounded-lg transition duration-200 ${
+                                activeWeek === index 
+                                    ? 'bg-blue-500 text-white shadow-md transform scale-105' 
+                                    : 'bg-white hover:bg-blue-50 border border-gray-200'
                             }`}
                             onClick={() => setActiveWeek(index)}
                         >
-                            <span className="text-lg font-bold">{week}</span>
-                            <span className="text-sm text-gray-600">{subjects[0]}</span>
+                            <FontAwesomeIcon icon={faCalendarAlt} className={`mr-4 text-xl ${
+                                activeWeek === index ? 'text-white' : 'text-blue-500'
+                            }`} />
+                            <div className="flex flex-col items-start">
+                                <span className="font-semibold text-lg">{week}</span>
+                                <span className="text-sm opacity-75">{subjects[0]}</span>
+                            </div>
                         </button>
                     ))}
                 </div>

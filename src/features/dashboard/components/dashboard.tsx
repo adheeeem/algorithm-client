@@ -5,13 +5,13 @@ import aoaLogo from '../../../assets/aoa-logo-notext.png'; // Adjust the path ba
 import userIcon from '../../../assets/user-icon.png'; // Adjust the path for user icon
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesome
 import { faBook } from '@fortawesome/free-solid-svg-icons'; // Import a book icon for units
-import { faFileDownload } from '@fortawesome/free-solid-svg-icons'; 
+import { faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import { useLogout, useUser } from '@/lib/auth';
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
     const [isMenuOpen, setIsMenuOpen] = useState(false); // State to manage menu visibility
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const navigate = useNavigate();
     const logout = useLogout();
     const user = useUser();
@@ -31,11 +31,11 @@ const Dashboard: React.FC = () => {
 
     const handleLogout = () => {
         logout();
-        window.location.reload(); 
+        window.location.reload();
     };
 
     // Example unit completion status (true for completed, false for not)
-    const unitCompletionStatus = [true, false, false, true, false, false, true, false]; // 8 units
+    const unitCompletionStatus = [false, false, false, false, false, false, false, false]; // 8 units
 
     useEffect(() => {
         // Any side effects you want to run when the component mounts or when selectedUnit changes
@@ -109,13 +109,12 @@ const Dashboard: React.FC = () => {
                     {unitCompletionStatus.map((isCompleted, index) => (
                         <div key={index} className="flex flex-col items-center">
                             <button
-                                className={`h-10 w-10 rounded-full flex items-center justify-center transition duration-200 ${
-                                    selectedUnit === index + 1
+                                className={`h-10 w-10 rounded-full flex items-center justify-center transition duration-200 ${selectedUnit === index + 1
                                         ? 'bg-blue-600 text-white'
                                         : isCompleted
-                                        ? 'bg-blue-500 text-white'
-                                        : 'bg-white border-2 border-blue-500 text-blue-500'
-                                } hover:bg-blue-100`}
+                                            ? 'bg-blue-500 text-white'
+                                            : 'bg-white border-2 border-blue-500 text-blue-500'
+                                    } hover:bg-blue-100`}
                                 title={t('unit.label', { unitNumber: index + 1 })}
                                 onClick={() => setSelectedUnit(index + 1)}
                             >
@@ -135,6 +134,11 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Main Content */}
+            {selectedUnit && (
+                <h2 className="text-2xl text-center pt-4 font-bold mb-4">
+                    {t('unit.selected', { unitNumber: selectedUnit })}
+                </h2>
+            )}
             <div className="flex-grow flex flex-col md:flex-row">
                 {/* Left Side List for Mobile */}
                 <div className="md:hidden p-4"> {/* Mobile Dropdown */}
@@ -165,11 +169,6 @@ const Dashboard: React.FC = () => {
 
                 {/* Right Side Content */}
                 <div className="flex-grow p-4">
-                    {selectedUnit && (
-                        <h2 className="text-2xl font-bold mb-4">
-                            {t('unit.selected', { unitNumber: selectedUnit })}
-                        </h2>
-                    )}
                     <div className="flex flex-col items-center mb-4"> {/* Centering container */}
                         <button className="btn btn-primary mb-2" onClick={() => navigate('/test')}>{t('pass_test')}</button> {/* Button to pass the test */}
                         <a href="/path/to/file" className="flex items-center"> {/* File download link */}

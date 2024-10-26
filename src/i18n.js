@@ -33,6 +33,7 @@ i18n
           'header.logout': 'Logout',
           'notFound.message': 'Page not found',
           'notFound.backToHome': 'Back to Home',
+          'unit.selected': 'Unit {{unitNumber}}',
         },
       },
       ru: {
@@ -63,6 +64,7 @@ i18n
           'header.logout': 'Выйти',
           'notFound.message': 'Страница не найдена',
           'notFound.backToHome': 'Вернуться на главную',
+          'unit.selected': 'Глава {{unitNumber}}',
         },
       },
       tj: {
@@ -93,6 +95,7 @@ i18n
           'header.logout': 'Вийти',
           'notFound.message': 'Страница не найдена',
           'notFound.backToHome': 'Вернуться на главную',
+          'unit.selected': 'Глава {{unitNumber}}',
         },
       },
     },

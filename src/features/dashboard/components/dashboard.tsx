@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom'; // Import Link for navigation
 import aoaLogo from '../../../assets/aoa-logo-notext.png'; // Adjust the path based on your folder structure
@@ -15,6 +15,7 @@ const Dashboard: React.FC = () => {
     const navigate = useNavigate();
     const logout = useLogout();
     const user = useUser();
+    const [selectedUnit, setSelectedUnit] = useState<number>(1); // Set default to 1
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         i18n.changeLanguage(event.target.value);
@@ -34,9 +35,11 @@ const Dashboard: React.FC = () => {
     };
 
     // Example unit completion status (true for completed, false for not)
-    const unitCompletionStatus = Array(8).fill(false);
-    unitCompletionStatus[0] = true; // Example: Unit 3 is completed
-    unitCompletionStatus[1] = true; // Example: Unit 6 is completed
+    const unitCompletionStatus = [true, false, false, true, false, false, true, false]; // 8 units
+
+    useEffect(() => {
+        // Any side effects you want to run when the component mounts or when selectedUnit changes
+    }, [selectedUnit]);
 
     const weeks = [t('weeks.week1'), t('weeks.week2'), t('weeks.week3'), t('weeks.week4')]; // Translated Week Names
     const subjects = [t('subjects.polynomials')]; // Translated Subject Name
@@ -107,13 +110,18 @@ const Dashboard: React.FC = () => {
                         <div key={index} className="flex flex-col items-center">
                             <button
                                 className={`h-10 w-10 rounded-full flex items-center justify-center transition duration-200 ${
-                                    isCompleted ? 'bg-blue-500 text-white' : 'bg-white border-2 border-blue-500 text-blue-500'
+                                    selectedUnit === index + 1
+                                        ? 'bg-blue-600 text-white'
+                                        : isCompleted
+                                        ? 'bg-blue-500 text-white'
+                                        : 'bg-white border-2 border-blue-500 text-blue-500'
                                 } hover:bg-blue-100`}
                                 title={t('unit.label', { unitNumber: index + 1 })}
+                                onClick={() => setSelectedUnit(index + 1)}
                             >
-                                <FontAwesomeIcon icon={faBook} className="h-6 w-6" /> {/* Unit Icon */}
+                                <FontAwesomeIcon icon={faBook} className="h-6 w-6" />
                             </button>
-                            <span className="text-xs">{t('unit.label', { unitNumber: index + 1 })}</span> {/* Unit Label */}
+                            <span className="text-xs mt-1">{t('unit.label', { unitNumber: index + 1 })}</span>
                         </div>
                     ))}
                 </div>
@@ -155,8 +163,13 @@ const Dashboard: React.FC = () => {
                     ))}
                 </div>
 
-                {/* Right Side Empty Space */}
-                <div className="flex-grow p-4"> {/* Remaining space for future changes */}
+                {/* Right Side Content */}
+                <div className="flex-grow p-4">
+                    {selectedUnit && (
+                        <h2 className="text-2xl font-bold mb-4">
+                            {t('unit.selected', { unitNumber: selectedUnit })}
+                        </h2>
+                    )}
                     <div className="flex flex-col items-center mb-4"> {/* Centering container */}
                         <button className="btn btn-primary mb-2" onClick={() => navigate('/test')}>{t('pass_test')}</button> {/* Button to pass the test */}
                         <a href="/path/to/file" className="flex items-center"> {/* File download link */}

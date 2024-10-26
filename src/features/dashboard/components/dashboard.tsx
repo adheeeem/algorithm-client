@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import Font
 import { faBook } from '@fortawesome/free-solid-svg-icons'; // Import a book icon for units
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import { useLogout, useUser } from '@/lib/auth';
+import { faBookOpen } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top of the file
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -135,9 +136,13 @@ const Dashboard: React.FC = () => {
 
             {/* Main Content */}
             {selectedUnit && (
-                <h2 className="text-2xl text-center pt-4 font-bold mb-4">
-                    {t('unit.selected', { unitNumber: selectedUnit })}
-                </h2>
+                <div className="flex flex-col items-center justify-center pt-4 mb-4">
+                    <h2 className="text-2xl font-bold mb-2 flex items-center">
+                        <FontAwesomeIcon icon={faBookOpen} className="mr-2 text-blue-500" />
+                        {t('unit.selected', { unitNumber: selectedUnit })}
+                    </h2>
+                    <div className="w-16 h-1 bg-blue-500 rounded-full"></div>
+                </div>
             )}
             <div className="flex-grow flex flex-col md:flex-row">
                 {/* Left Side List for Mobile */}

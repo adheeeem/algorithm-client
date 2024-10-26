@@ -160,7 +160,7 @@ const Dashboard: React.FC = () => {
                                     className={`flex items-center p-3 rounded-lg transition duration-200 ${
                                         activeWeek === index 
                                             ? 'bg-blue-500 text-white shadow-md' 
-                                            : 'bg-white hover:bg-blue-50 border border-gray-200'
+                                            : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
                                     }`}
                                     onClick={() => setActiveWeek(index)}
                                 >
@@ -176,15 +176,14 @@ const Dashboard: React.FC = () => {
                 </div>
 
                 {/* Left Side List for Desktop */}
-                <div className="hidden md:w-1/3 md:p-4 md:flex md:flex-col md:space-y-3">
-                    
+                <div className="hidden md:w-1/3 md:p-6 md:flex md:flex-col md:space-y-3">
                     {weeks.map((week, index) => (
                         <button 
                             key={index} 
                             className={`flex items-center p-4 rounded-lg transition duration-200 ${
                                 activeWeek === index 
                                     ? 'bg-blue-500 text-white shadow-md transform scale-105' 
-                                    : 'bg-white hover:bg-blue-50 border border-gray-200'
+                                    : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
                             }`}
                             onClick={() => setActiveWeek(index)}
                         >

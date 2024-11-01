@@ -9,7 +9,9 @@ import { faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import { useLogout, useUser } from '@/lib/auth';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top of the file
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'; // Add this import
-import { useEnrollmentStatus } from '../api/enrollment';
+import { useEnrollInUnit, useEnrollmentStatus } from '../api/enrollment';
+import { SquareLoader } from '@/components/ui/loader/square-loader';
+import { useMutation } from 'react-query';
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -20,7 +22,12 @@ const Dashboard: React.FC = () => {
     const user = useUser();
     const [selectedUnit, setSelectedUnit] = useState<number>(1); // Set default to 1
     const [activeWeek, setActiveWeek] = useState(0); // Add this state for tracking active week
-    const { data: enrollmentStatus } = useEnrollmentStatus(selectedUnit);
+    const { data: enrollmentStatus, isLoading: isEnrollmentLoading } = useEnrollmentStatus(selectedUnit);
+    const enrollInUnit = useEnrollInUnit();
+
+    const handleEnroll = () => {
+        enrollInUnit.mutate(selectedUnit);
+    };
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         i18n.changeLanguage(event.target.value);
@@ -69,11 +76,7 @@ const Dashboard: React.FC = () => {
                             <option value="tj">TJ</option>
                         </select>
                     </div>
-                    {enrollmentStatus && (
-                        <div className="text-sm text-gray-500">
-                            {enrollmentStatus.enrolled ? t('enrollment.enrolled') : t('enrollment.notEnrolled')}
-                        </div>
-                    )}
+
                 </div>
                 <div className="flex flex-col items-center md:flex-row md:items-center">
                     <img src={aoaLogo} alt="Logo" className="h-16 w-16 mb-2 md:mb-0 md:mr-2" /> {/* Increased icon size */}
@@ -120,10 +123,10 @@ const Dashboard: React.FC = () => {
                         <div key={index} className="flex flex-col items-center">
                             <button
                                 className={`h-10 w-10 rounded-full flex items-center justify-center transition duration-200 ${selectedUnit === index + 1
-                                        ? 'bg-blue-600 text-white'
-                                        : isCompleted
-                                            ? 'bg-blue-500 text-white'
-                                            : 'bg-white border-2 border-blue-500 text-blue-500'
+                                    ? 'bg-blue-600 text-white'
+                                    : isCompleted
+                                        ? 'bg-blue-500 text-white'
+                                        : 'bg-white border-2 border-blue-500 text-blue-500'
                                     } hover:bg-blue-100`}
                                 title={t('unit.label', { unitNumber: index + 1 })}
                                 onClick={() => setSelectedUnit(index + 1)}
@@ -153,85 +156,111 @@ const Dashboard: React.FC = () => {
                     <div className="w-16 h-1 bg-blue-500 rounded-full"></div>
                 </div>
             )}
-            <div className="flex-grow flex flex-col md:flex-row">
-                {/* Left Side List for Mobile */}
-                <div className="md:hidden p-4">
-                    <button onClick={toggleDropdown} className="btn btn-outline btn-primary w-full">
-                        {t('header.weeks')}
-                    </button>
-                    {isDropdownOpen && (
-                        <div className="flex flex-col space-y-2 mt-2">
+
+            {isEnrollmentLoading ? (
+                <div className="flex justify-center items-center w-full">
+                    <SquareLoader />
+                </div>
+            ) : (
+                <div className="relative flex-grow flex flex-col md:flex-row">
+                    {/* Content Container */}
+                    <div className={`flex-grow flex flex-col md:flex-row ${!enrollmentStatus?.paid || !enrollmentStatus?.enrolled ? 'blur-sm' : ''}`}>
+                        {/* Left Side List for Mobile */}
+                        <div className="md:hidden p-4">
+                            <button onClick={toggleDropdown} className="btn btn-outline btn-primary w-full">
+                                {t('header.weeks')}
+                            </button>
+                            {isDropdownOpen && (
+                                <div className="flex flex-col space-y-2 mt-2">
+                                    {weeks.map((week, index) => (
+                                        <button
+                                            key={index}
+                                            className={`flex items-center p-3 rounded-lg transition duration-200 ${activeWeek === index
+                                                    ? 'bg-blue-500 text-white shadow-md'
+                                                    : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                                                }`}
+                                            onClick={() => setActiveWeek(index)}
+                                        >
+                                            <FontAwesomeIcon icon={faCalendarAlt} className="mr-3 text-lg" />
+                                            <div className="flex flex-col items-start">
+                                                <span className="font-semibold">{week}</span>
+                                                <span className="text-xs opacity-75">{subjects[0]}</span>
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Left Side List for Desktop */}
+                        <div className="hidden md:w-1/3 md:p-6 md:flex md:flex-col md:space-y-3">
                             {weeks.map((week, index) => (
-                                <button 
-                                    key={index} 
-                                    className={`flex items-center p-3 rounded-lg transition duration-200 ${
-                                        activeWeek === index 
-                                            ? 'bg-blue-500 text-white shadow-md' 
+                                <button
+                                    key={index}
+                                    className={`flex items-center p-4 rounded-lg transition duration-200 ${activeWeek === index
+                                            ? 'bg-blue-500 text-white shadow-md transform scale-105'
                                             : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-                                    }`}
+                                        }`}
                                     onClick={() => setActiveWeek(index)}
                                 >
-                                    <FontAwesomeIcon icon={faCalendarAlt} className="mr-3 text-lg" />
+                                    <FontAwesomeIcon icon={faCalendarAlt} className={`mr-4 text-xl ${activeWeek === index ? 'text-white' : 'text-blue-500'
+                                        }`} />
                                     <div className="flex flex-col items-start">
-                                        <span className="font-semibold">{week}</span>
-                                        <span className="text-xs opacity-75">{subjects[0]}</span>
+                                        <span className="font-semibold text-lg">{week}</span>
+                                        <span className="text-sm opacity-75">{subjects[0]}</span>
                                     </div>
                                 </button>
                             ))}
                         </div>
+
+                        {/* Right Side Content */}
+                        <div className="flex-grow p-4">
+                            <h3 className="text-xl font-bold mb-4">{weeks[activeWeek]}</h3>
+                            <div className="flex flex-col items-center mb-4">
+                                <button className="btn btn-primary mb-2" onClick={() => navigate('/test')}>{t('pass_test')}</button>
+                                <a href="/path/to/file" className="flex items-center">
+                                    <FontAwesomeIcon icon={faFileDownload} className="mr-2" />
+                                    {t('download_file')}
+                                </a>
+                            </div>
+                            <table className="min-w-full border-collapse border border-gray-200">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 p-2">{t('header_1')}</th>
+                                        <th className="border border-gray-300 p-2">{t('header_2')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className="border border-gray-300 p-2">{t('data_1')}</td>
+                                        <td className="border border-gray-300 p-2">{t('data_2')}</td>
+                                    </tr>
+                                    {/* Add more rows as needed */}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* Overlay Message/Button */}
+                    {(!enrollmentStatus?.paid || !enrollmentStatus?.enrolled) && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-base-100/30">
+                            {!enrollmentStatus?.paid ? (
+                                <div className="text-center p-4 bg-base-100 rounded-lg shadow-lg">
+                                    <p className="text-lg">{t('enrollment.notPaid')}</p>
+                                    <p className="text-sm text-gray-600">{t('enrollment.contactAdmin')}</p>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={handleEnroll}
+                                    className="btn btn-primary"
+                                >
+                                    {t('enrollment.enroll')}
+                                </button>
+                            )}
+                        </div>
                     )}
                 </div>
-
-                {/* Left Side List for Desktop */}
-                <div className="hidden md:w-1/3 md:p-6 md:flex md:flex-col md:space-y-3">
-                    {weeks.map((week, index) => (
-                        <button 
-                            key={index} 
-                            className={`flex items-center p-4 rounded-lg transition duration-200 ${
-                                activeWeek === index 
-                                    ? 'bg-blue-500 text-white shadow-md transform scale-105' 
-                                    : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-                            }`}
-                            onClick={() => setActiveWeek(index)}
-                        >
-                            <FontAwesomeIcon icon={faCalendarAlt} className={`mr-4 text-xl ${
-                                activeWeek === index ? 'text-white' : 'text-blue-500'
-                            }`} />
-                            <div className="flex flex-col items-start">
-                                <span className="font-semibold text-lg">{week}</span>
-                                <span className="text-sm opacity-75">{subjects[0]}</span>
-                            </div>
-                        </button>
-                    ))}
-                </div>
-
-                {/* Right Side Content */}
-                <div className="flex-grow p-4">
-                    <h3 className="text-xl font-bold mb-4">{weeks[activeWeek]}</h3>
-                    <div className="flex flex-col items-center mb-4">
-                        <button className="btn btn-primary mb-2" onClick={() => navigate('/test')}>{t('pass_test')}</button>
-                        <a href="/path/to/file" className="flex items-center">
-                            <FontAwesomeIcon icon={faFileDownload} className="mr-2" />
-                            {t('download_file')}
-                        </a>
-                    </div>
-                    <table className="min-w-full border-collapse border border-gray-200">
-                        <thead>
-                            <tr>
-                                <th className="border border-gray-300 p-2">{t('header_1')}</th>
-                                <th className="border border-gray-300 p-2">{t('header_2')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td className="border border-gray-300 p-2">{t('data_1')}</td>
-                                <td className="border border-gray-300 p-2">{t('data_2')}</td>
-                            </tr>
-                            {/* Add more rows as needed */}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            )}
         </div>
     );
 };

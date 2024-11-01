@@ -243,19 +243,31 @@ const Dashboard: React.FC = () => {
 
                     {/* Overlay Message/Button */}
                     {(!enrollmentStatus?.paid || !enrollmentStatus?.enrolled) && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-base-100/30">
+                        <div className="absolute inset-0 flex items-center justify-center bg-base-100/50">
                             {!enrollmentStatus?.paid ? (
-                                <div className="text-center p-4 bg-base-100 rounded-lg shadow-lg">
-                                    <p className="text-lg">{t('enrollment.notPaid')}</p>
-                                    <p className="text-sm text-gray-600">{t('enrollment.contactAdmin')}</p>
+                                <div className="text-center p-8 bg-base-100 rounded-xl shadow-2xl border-2 border-warning max-w-md mx-4">
+                                    <div className="text-warning text-5xl mb-4">⚠️</div>
+                                    <h3 className="text-2xl font-bold text-warning mb-3">{t('enrollment.status.unpaid.title')}</h3>
+                                    <p className="text-gray-700 text-lg mb-4">{t('enrollment.status.unpaid.contact')}</p>
+                                    <div className="bg-warning/10 p-4 rounded-lg">
+                                        <p className="text-warning font-medium">
+                                            {t('enrollment.status.unpaid.message')}
+                                        </p>
+                                    </div>
                                 </div>
                             ) : (
-                                <button
-                                    onClick={handleEnroll}
-                                    className="btn btn-primary"
-                                >
-                                    {t('enrollment.enroll')}
-                                </button>
+                                <div className="text-center p-8 bg-base-100 rounded-xl shadow-2xl border-2 border-primary max-w-md mx-4">
+                                    <div className="text-primary text-5xl mb-4">📚</div>
+                                    <h3 className="text-2xl font-bold text-primary mb-3">{t('enrollment.status.ready.title')}</h3>
+                                    <p className="text-gray-700 mb-6">{t('enrollment.status.ready.description')}</p>
+                                    <button
+                                        onClick={handleEnroll}
+                                        className="btn btn-primary btn-lg w-full mb-4"
+                                    >
+                                        {t('enrollment.status.ready.button')}
+                                    </button>
+                                    <p className="text-sm text-gray-600">{t('enrollment.status.ready.subtitle')}</p>
+                                </div>
                             )}
                         </div>
                     )}

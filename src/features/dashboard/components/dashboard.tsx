@@ -9,6 +9,7 @@ import { faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import { useLogout, useUser } from '@/lib/auth';
 import { faBookOpen } from '@fortawesome/free-solid-svg-icons'; // Add this import at the top of the file
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'; // Add this import
+import { useEnrollmentStatus } from '../api/enrollment';
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -19,6 +20,7 @@ const Dashboard: React.FC = () => {
     const user = useUser();
     const [selectedUnit, setSelectedUnit] = useState<number>(1); // Set default to 1
     const [activeWeek, setActiveWeek] = useState(0); // Add this state for tracking active week
+    const { data: enrollmentStatus } = useEnrollmentStatus(selectedUnit);
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         i18n.changeLanguage(event.target.value);
@@ -67,6 +69,11 @@ const Dashboard: React.FC = () => {
                             <option value="tj">TJ</option>
                         </select>
                     </div>
+                    {enrollmentStatus && (
+                        <div className="text-sm text-gray-500">
+                            {enrollmentStatus.enrolled ? t('enrollment.enrolled') : t('enrollment.notEnrolled')}
+                        </div>
+                    )}
                 </div>
                 <div className="flex flex-col items-center md:flex-row md:items-center">
                     <img src={aoaLogo} alt="Logo" className="h-16 w-16 mb-2 md:mb-0 md:mr-2" /> {/* Increased icon size */}

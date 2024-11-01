@@ -78,3 +78,11 @@ export type Student = {
     dateOfBirth: string,
     gender: number
 }
+
+export type EnrollmentResponse = {
+    unitNumber: number,
+    isCompleted: boolean,
+    paid: boolean,
+    enrolled: boolean,
+    date: Date
+}

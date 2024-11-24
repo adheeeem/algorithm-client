@@ -12,6 +12,7 @@ import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons'; // Add this i
 import { useEnrollInUnit, useEnrollmentStatus } from '../api/enrollment';
 import { SquareLoader } from '@/components/ui/loader/square-loader';
 import confetti from 'canvas-confetti';
+import { useWeeklyAccess } from '@/features/dashboard/api/get-weekly-access';
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -24,6 +25,7 @@ const Dashboard: React.FC = () => {
     const [activeWeek, setActiveWeek] = useState(0); // Add this state for tracking active week
     const { data: enrollmentStatus, isLoading: isEnrollmentLoading } = useEnrollmentStatus(selectedUnit);
     const enrollInUnit = useEnrollInUnit();
+    const { data: weeklyAccess, isLoading: _ } = useWeeklyAccess(selectedUnit);
 
     const triggerConfetti = () => {
         // Fire multiple confetti bursts
@@ -104,6 +106,22 @@ const Dashboard: React.FC = () => {
 
     const weeks = [t('weeks.week1'), t('weeks.week2'), t('weeks.week3'), t('weeks.week4')]; // Translated Week Names
     const subjects = [t('subjects.polynomials')]; // Translated Subject Name
+
+    // Helper function to check if week is accessible
+    const isWeekAccessible = (weekIndex: number) => {
+        if (weekIndex == 0) {
+            return weeklyAccess?.week1;
+        }
+        if (weekIndex == 1) {
+            return weeklyAccess?.week2;
+        }
+        if (weekIndex == 2) {
+            return weeklyAccess?.week3;
+        }
+        if (weekIndex == 3) {
+            return weeklyAccess?.week4;
+        }
+    };
 
     return (
         <div className="flex flex-col h-screen relative"> {/* Added relative positioning */}
@@ -224,13 +242,22 @@ const Dashboard: React.FC = () => {
                                     {weeks.map((week, index) => (
                                         <button
                                             key={index}
-                                            className={`flex items-center p-3 rounded-lg transition duration-200 ${activeWeek === index
+                                            className={`flex items-center p-3 rounded-lg transition duration-200 
+                                                ${!isWeekAccessible(index) ? 'opacity-50 cursor-not-allowed' : 
+                                                  activeWeek === index 
                                                     ? 'bg-blue-500 text-white shadow-md'
                                                     : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
                                                 }`}
-                                            onClick={() => setActiveWeek(index)}
+                                            onClick={() => isWeekAccessible(index) && setActiveWeek(index)}
+                                            disabled={!isWeekAccessible(index)}
                                         >
-                                            <FontAwesomeIcon icon={faCalendarAlt} className="mr-3 text-lg" />
+                                            <FontAwesomeIcon 
+                                                icon={faCalendarAlt} 
+                                                className={`mr-3 text-lg ${
+                                                    !isWeekAccessible(index+1) ? 'text-gray-400' :
+                                                    activeWeek === index ? 'text-white' : 'text-blue-500'
+                                                }`} 
+                                            />
                                             <div className="flex flex-col items-start">
                                                 <span className="font-semibold">{week}</span>
                                                 <span className="text-xs opacity-75">{subjects[0]}</span>
@@ -246,14 +273,22 @@ const Dashboard: React.FC = () => {
                             {weeks.map((week, index) => (
                                 <button
                                     key={index}
-                                    className={`flex items-center p-4 rounded-lg transition duration-200 ${activeWeek === index
+                                    className={`flex items-center p-4 rounded-lg transition duration-200 
+                                        ${!isWeekAccessible(index) ? 'opacity-50 cursor-not-allowed' : 
+                                          activeWeek === index 
                                             ? 'bg-blue-500 text-white shadow-md transform scale-105'
                                             : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
                                         }`}
-                                    onClick={() => setActiveWeek(index)}
+                                    onClick={() => isWeekAccessible(index+1) && setActiveWeek(index)}
+                                    disabled={!isWeekAccessible(index+1)}
                                 >
-                                    <FontAwesomeIcon icon={faCalendarAlt} className={`mr-4 text-xl ${activeWeek === index ? 'text-white' : 'text-blue-500'
-                                        }`} />
+                                    <FontAwesomeIcon 
+                                        icon={faCalendarAlt} 
+                                        className={`mr-4 text-xl ${
+                                            !isWeekAccessible(index) ? 'text-gray-400' :
+                                            activeWeek === index ? 'text-white' : 'text-blue-500'
+                                        }`} 
+                                    />
                                     <div className="flex flex-col items-start">
                                         <span className="font-semibold text-lg">{week}</span>
                                         <span className="text-sm opacity-75">{subjects[0]}</span>

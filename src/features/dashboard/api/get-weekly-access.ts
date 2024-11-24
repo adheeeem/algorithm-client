@@ -15,7 +15,7 @@ const getWeeklyAccess = async (unitNumber: number): Promise<WeeklyAccessResponse
         }
     };
 
-    const response = await api.get(`/access/${unitNumber}`, config);
+    const response = await api.get(`/UserWeeklyActivity/${unitNumber}`, config);
     return response.data;
 }
 

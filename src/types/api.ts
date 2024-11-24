@@ -86,3 +86,11 @@ export type EnrollmentResponse = {
     enrolled: boolean,
     date: Date
 }
+
+export type WeeklyAccessResponse = {
+    week1: boolean,
+    week2: boolean,
+    week3: boolean,
+    week4: boolean
+}
+

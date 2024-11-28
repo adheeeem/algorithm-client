@@ -96,11 +96,10 @@ export const ProtectedRoute = ({ children, roles = [] }: { children: React.React
     const location = useLocation();
 
     if (isLoading) {
-        return <SquareLoader />; // Or your custom loading component
+        return <SquareLoader />;
     }
     if (isError || (!!userData?.data && (userData?.statusCode !== 200 || !roles.includes(userData?.data?.role!)))) {
         return (
-            console.log("navigating: ", userData?.data),
             <Navigate
                 to={`/login?redirectTo=${encodeURIComponent(location.pathname)}`}
                 replace

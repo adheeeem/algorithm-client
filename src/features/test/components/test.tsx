@@ -3,15 +3,16 @@ import Latex from 'react-latex'
 import 'katex/dist/katex.min.css'; // Import KaTeX CSS
 import { queryQuestionsWithPagination } from '@/features/test/api/get-questions'; // Adjust import path as needed
 import { useDeleteQuestion } from '@/features/test/api/delete-question'; // Import useDeleteQuestion hook
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { SquareLoader } from '@/components/ui/loader/square-loader';
 const Test: React.FC = () => {
     const [page, setPage] = useState(1);
-    const { unitNumber, weekNumber, grade } = useParams<{ unitNumber: string; weekNumber: string; grade: string }>();
+    const [searchParams] = useSearchParams();
+    const unitNumber = Number(searchParams.get('unit')) || 1;
+    const weekNumber = Number(searchParams.get('week')) || 1;
     const parsedUnitNumber = unitNumber ? Number(unitNumber) : undefined;
     const parsedWeekNumber = weekNumber ? Number(weekNumber) : undefined;
-    const parsedGrade = grade ? Number(grade) : undefined;
-    const { data, isLoading, isError, refetch } = queryQuestionsWithPagination(parsedWeekNumber, parsedUnitNumber, parsedGrade); // Add refetch for refreshing data after deletion
+    const { data, isLoading, isError, error } = queryQuestionsWithPagination(parsedWeekNumber, parsedUnitNumber); // Add refetch for refreshing data after deletion
 
     const deleteQuestionMutation = useDeleteQuestion();
 
@@ -21,7 +22,6 @@ const Test: React.FC = () => {
             try {
                 await deleteQuestionMutation.mutateAsync(id);
                 alert(`Question ${id} deleted successfully.`);
-                refetch(); // Refetch the data to update the list after deletion
             } catch (error) {
                 console.error('Error deleting question:', error);
                 alert('Failed to delete the question.');
@@ -34,7 +34,7 @@ const Test: React.FC = () => {
     }
 
     if (isError) {
-        return <div>Error fetching questions</div>;
+        return <div>{error instanceof Error ? error.message : 'Error fetching questions'}</div>;
     }
 
     return (

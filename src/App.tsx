@@ -25,7 +25,7 @@ const App: React.FC = () => {
           } />
 
           <Route path="/test" element={
-            <ProtectedRoute roles={[1, 2, 3]}>
+            <ProtectedRoute roles={[1, 2, 3, 4]}>
               <Test />
             </ProtectedRoute>
           } />

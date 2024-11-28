@@ -301,7 +301,7 @@ const Dashboard: React.FC = () => {
                         <div className="flex-grow p-4">
                             <h3 className="text-xl font-bold mb-4">{weeks[activeWeek]}</h3>
                             <div className="flex flex-col items-center mb-4">
-                                <button className="btn btn-primary mb-2" onClick={() => navigate('/test')}>{t('pass_test')}</button>
+                                <button className="btn btn-primary mb-2" onClick={() => navigate('/test?unit=' + selectedUnit + '&week=' + (activeWeek + 1))}>{t('pass_test')}</button>
                                 <a href="/path/to/file" className="flex items-center">
                                     <FontAwesomeIcon icon={faFileDownload} className="mr-2" />
                                     {t('download_file')}

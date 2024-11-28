@@ -1,8 +1,9 @@
 import { api } from "@/lib/api-client";
+import { isErrorResponse } from "@/lib/utils";
 import { ListResponse, Question } from "@/types/api";
 import { useQuery } from 'react-query';
 
-const getQuestionsWithPagination = async (weekNumber?: number, unitNumber?: number, grade?: number): Promise<ListResponse<Question>> => {
+const getQuestionsWithPagination = async (weekNumber?: number, unitNumber?: number): Promise<ListResponse<Question>> => {
     const accessToken = localStorage.getItem('accessToken');
     
     if (!accessToken) {
@@ -13,19 +14,21 @@ const getQuestionsWithPagination = async (weekNumber?: number, unitNumber?: numb
         params: {
             weekNumber,
             unitNumber,
-            grade
         },
         headers: {
             Authorization: `Bearer ${accessToken}`
         }
     });
+    if (isErrorResponse(response.data)) {
+        throw new Error(response.data.message);
+    }
     return response.data;
 };
 
-export const queryQuestionsWithPagination = (weekNumber?: number, unitNumber?: number, grade?: number) => 
+export const queryQuestionsWithPagination = (weekNumber?: number, unitNumber?: number) => 
     useQuery<ListResponse<Question>, Error>(
-        ['questionsWithPagination', weekNumber, unitNumber, grade],
-        () => getQuestionsWithPagination(weekNumber, unitNumber, grade),
+        ['questionsWithPagination', weekNumber, unitNumber],
+        () => getQuestionsWithPagination(weekNumber, unitNumber),
         {
             onError: (error) => {
                 console.error('Error fetching questions:', error);

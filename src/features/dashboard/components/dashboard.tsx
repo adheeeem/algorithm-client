@@ -13,6 +13,7 @@ import { useEnrollInUnit, useEnrollmentStatus } from '../api/enrollment';
 import { SquareLoader } from '@/components/ui/loader/square-loader';
 import confetti from 'canvas-confetti';
 import { useWeeklyAccess } from '@/features/dashboard/api/get-weekly-access';
+import { queryQuestionAttempts } from '@/features/test/api/question-attempt';
 
 const Dashboard: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -26,6 +27,10 @@ const Dashboard: React.FC = () => {
     const { data: enrollmentStatus, isLoading: isEnrollmentLoading } = useEnrollmentStatus(selectedUnit);
     const enrollInUnit = useEnrollInUnit();
     const { data: weeklyAccess, isLoading: _ } = useWeeklyAccess(selectedUnit);
+    const { data: questionAttempts } = queryQuestionAttempts(activeWeek + 1, selectedUnit);
+
+    // Add this line to debug
+    console.log('questionAttempts:', questionAttempts);
 
     const triggerConfetti = () => {
         // Fire multiple confetti bursts
@@ -243,20 +248,19 @@ const Dashboard: React.FC = () => {
                                         <button
                                             key={index}
                                             className={`flex items-center p-3 rounded-lg transition duration-200 
-                                                ${!isWeekAccessible(index) ? 'opacity-50 cursor-not-allowed' : 
-                                                  activeWeek === index 
-                                                    ? 'bg-blue-500 text-white shadow-md'
-                                                    : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                                                ${!isWeekAccessible(index) ? 'opacity-50 cursor-not-allowed' :
+                                                    activeWeek === index
+                                                        ? 'bg-blue-500 text-white shadow-md'
+                                                        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
                                                 }`}
                                             onClick={() => isWeekAccessible(index) && setActiveWeek(index)}
                                             disabled={!isWeekAccessible(index)}
                                         >
-                                            <FontAwesomeIcon 
-                                                icon={faCalendarAlt} 
-                                                className={`mr-3 text-lg ${
-                                                    !isWeekAccessible(index+1) ? 'text-gray-400' :
-                                                    activeWeek === index ? 'text-white' : 'text-blue-500'
-                                                }`} 
+                                            <FontAwesomeIcon
+                                                icon={faCalendarAlt}
+                                                className={`mr-3 text-lg ${!isWeekAccessible(index + 1) ? 'text-gray-400' :
+                                                        activeWeek === index ? 'text-white' : 'text-blue-500'
+                                                    }`}
                                             />
                                             <div className="flex flex-col items-start">
                                                 <span className="font-semibold">{week}</span>
@@ -274,20 +278,19 @@ const Dashboard: React.FC = () => {
                                 <button
                                     key={index}
                                     className={`flex items-center p-4 rounded-lg transition duration-200 
-                                        ${!isWeekAccessible(index) ? 'opacity-50 cursor-not-allowed' : 
-                                          activeWeek === index 
-                                            ? 'bg-blue-500 text-white shadow-md transform scale-105'
-                                            : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                                        ${!isWeekAccessible(index) ? 'opacity-50 cursor-not-allowed' :
+                                            activeWeek === index
+                                                ? 'bg-blue-500 text-white shadow-md transform scale-105'
+                                                : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
                                         }`}
-                                    onClick={() => isWeekAccessible(index+1) && setActiveWeek(index)}
-                                    disabled={!isWeekAccessible(index+1)}
+                                    onClick={() => isWeekAccessible(index) && setActiveWeek(index)}
+                                    disabled={!isWeekAccessible(index)}
                                 >
-                                    <FontAwesomeIcon 
-                                        icon={faCalendarAlt} 
-                                        className={`mr-4 text-xl ${
-                                            !isWeekAccessible(index) ? 'text-gray-400' :
-                                            activeWeek === index ? 'text-white' : 'text-blue-500'
-                                        }`} 
+                                    <FontAwesomeIcon
+                                        icon={faCalendarAlt}
+                                        className={`mr-4 text-xl ${!isWeekAccessible(index) ? 'text-gray-400' :
+                                                activeWeek === index ? 'text-white' : 'text-blue-500'
+                                            }`}
                                     />
                                     <div className="flex flex-col items-start">
                                         <span className="font-semibold text-lg">{week}</span>
@@ -312,14 +315,26 @@ const Dashboard: React.FC = () => {
                                     <tr>
                                         <th className="border border-gray-300 p-2">{t('header_1')}</th>
                                         <th className="border border-gray-300 p-2">{t('header_2')}</th>
+                                        <th className="border border-gray-300 p-2">{t('header.date')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td className="border border-gray-300 p-2">{t('data_1')}</td>
-                                        <td className="border border-gray-300 p-2">{t('data_2')}</td>
-                                    </tr>
-                                    {/* Add more rows as needed */}
+                                    {questionAttempts?.items.map((attempt, index) => (
+                                        <tr key={index}>
+                                            <td className="border border-gray-300 p-2">{index + 1}</td>
+                                            <td className="border border-gray-300 p-2">{attempt.correctAnswers} out of {attempt.numberOfQuestions}</td>
+                                            <td className="border border-gray-300 p-2">
+                                                {new Date(attempt.date).toLocaleDateString()}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {(!questionAttempts?.items || questionAttempts.items.length === 0) && (
+                                        <tr>
+                                            <td colSpan={3} className="border border-gray-300 p-2 text-center text-gray-500">
+                                                {t('no.attempts')}
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>

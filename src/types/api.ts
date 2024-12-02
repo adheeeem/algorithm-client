@@ -94,3 +94,8 @@ export type WeeklyAccessResponse = {
     week4: boolean
 }
 
+export type MinimalQuestionAttemptResponse = {
+    correctAnswers: number,
+    date: Date,
+    numberOfQuestions: number
+}
